@@ -6,8 +6,11 @@ import { buttonVariants } from "@/components/ui/button";
 import { EVAL_HANDOFF_HREF } from "@/lib/eval-handoff";
 import {
   FLAG_PACK,
+  FLAG_PACK_PRIORITY_FIRST,
   IMPACT_COMPARE,
+  PRIORITY_SEED_IDS,
   RELEASE_WATCH_STEPS,
+  UNUSED_FLAG_IDS,
   type WatchStep,
 } from "@/lib/release-watch";
 import { cn } from "@/lib/utils";
@@ -66,16 +69,16 @@ export function ReleaseWatchStrip({
       </ol>
 
       <div className="flex flex-wrap gap-1.5">
-        {FLAG_PACK.map((chip) => (
+        {FLAG_PACK_PRIORITY_FIRST.map((chip) => (
           <Badge
             key={chip.id}
             variant="outline"
-            title={chip.note}
-            className="h-6 cursor-default px-2 text-[11px]"
+            title={`${chip.title} · ${chip.product} · ${chip.sourceUrl}`}
+            className="h-6 cursor-default px-2 font-mono text-[11px]"
           >
-            {chip.label}
-            {chip.kind === "placeholder" ? (
-              <span className="ml-1 text-muted-foreground">placeholder</span>
+            {chip.id}
+            {chip.prioritySeed ? (
+              <span className="ml-1 font-sans text-amber-800">seed</span>
             ) : null}
           </Badge>
         ))}
@@ -121,11 +124,22 @@ export function ReleaseWatchDetail({
       <h3 className="font-heading text-lg font-semibold">{step.title}</h3>
       <p className="mt-2 text-sm leading-relaxed">{step.detail}</p>
 
+      {step.id === "flag-pack" ? (
+        <p className="mt-3 text-xs text-muted-foreground">
+          {FLAG_PACK.length} handoff ids, {PRIORITY_SEED_IDS.length} priority
+          seeds. Digest skips {UNUSED_FLAG_IDS.length} unused-product flags
+          (Power Pages, Data Lake, USD, …) the same way it skips ENT-17.
+        </p>
+      ) : null}
+
       {step.id === "llm-compare" || step.id === "digest" ? (
         <ul className="mt-4 space-y-3">
           {IMPACT_COMPARE.map((row) => (
-            <li key={row.flag} className="rounded-lg border bg-muted/30 px-3 py-2">
+            <li key={row.flagId} className="rounded-lg border bg-muted/30 px-3 py-2">
               <div className="flex flex-wrap items-center gap-2">
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  {row.flagId}
+                </span>
                 <span className="text-sm font-semibold">{row.flag}</span>
                 <Badge
                   variant="outline"

@@ -344,8 +344,11 @@ export function EvalView({ search = "" }: { search?: string }) {
           </div>
           <ul className="space-y-3">
             {citations.map((row) => (
-              <li key={row.flag} className="rounded-lg border bg-muted/30 px-3 py-2">
+              <li key={row.flagId} className="rounded-lg border bg-muted/30 px-3 py-2">
                 <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-mono text-[11px] text-muted-foreground">
+                    {row.flagId}
+                  </span>
                   <span className="text-sm font-semibold">{row.flag}</span>
                   <Badge
                     variant="outline"
@@ -357,6 +360,9 @@ export function EvalView({ search = "" }: { search?: string }) {
                   >
                     {row.usage}
                   </Badge>
+                  {row.prioritySeed ? (
+                    <Badge variant="secondary">priority seed</Badge>
+                  ) : null}
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {row.contosoIds.map((id) => (
@@ -380,8 +386,9 @@ export function EvalView({ search = "" }: { search?: string }) {
             ))}
           </ul>
           <p className="text-xs text-muted-foreground">
-            Flag pack chips stay placeholders — not deprecation claims. Live-org
-            eval is parked.
+            Citation coverage is scored against FLAG_PACK ids and their handoff
+            source_url keys. Unused inventory stays omitted. Live-org eval is
+            parked.
           </p>
           <Link href="/eval" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
             Clear digest
