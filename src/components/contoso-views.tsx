@@ -380,8 +380,8 @@ export function EvalView({ search = "" }: { search?: string }) {
             ))}
           </ul>
           <p className="text-xs text-muted-foreground">
-            Unused ENT-17 is omitted from this handoff. Flag pack chips stay
-            placeholders — not deprecation claims.
+            Flag pack chips stay placeholders — not deprecation claims. Live-org
+            eval is parked.
           </p>
           <Link href="/eval" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
             Clear digest
