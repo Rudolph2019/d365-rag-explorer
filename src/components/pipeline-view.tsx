@@ -17,9 +17,9 @@ import { getPipelineStage, type PipelinePath } from "@/lib/pipeline";
 export function PipelineView() {
   const [path, setPath] = useState<PipelinePath>("indexing");
   const [model, setModel] = useState<"azure" | "ollama">("ollama");
-  const [selectedId, setSelectedId] = useState<string>("mcp");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const stage = getPipelineStage(selectedId) ?? null;
+  const stage = selectedId ? getPipelineStage(selectedId) ?? null : null;
 
   function selectStage(id: string) {
     setSelectedId(id);
@@ -76,7 +76,11 @@ export function PipelineView() {
           onSelect={selectStage}
         />
         <div className="hidden lg:block">
-          <StageDetail stage={stage} model={model} />
+          <StageDetail
+            stage={stage}
+            model={model}
+            onPick={() => selectStage("mcp")}
+          />
         </div>
       </div>
 
@@ -87,7 +91,11 @@ export function PipelineView() {
             <SheetDescription>{stage?.summary}</SheetDescription>
           </SheetHeader>
           <div className="px-4 pb-6">
-            <StageDetail stage={stage} model={model} />
+            <StageDetail
+              stage={stage}
+              model={model}
+              onPick={() => selectStage("mcp")}
+            />
           </div>
         </SheetContent>
       </Sheet>

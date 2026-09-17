@@ -17,10 +17,10 @@ Dev server: [http://127.0.0.1:43145](http://127.0.0.1:43145)
 
 Routes:
 
-- `/architecture` **Architecture** — Contoso RAG: Sources → Retrieve → Agent loop (planner / tools / critic) → Citations, plus Release Watch (signals → flag pack → Env Swap inventory · Contoso-only until unparked → in use / referenced / unused → LLM impact compare → digest → Retrieval Eval)
-- `/query` **Query** · `/graph` **Graph** · `/records` **Records** — Contoso demo corpus happy path (unused inventory skipped)
-- `/eval` **Retrieval Eval** — empty until Architecture hands off a digest
-- `/` **Pipeline** — Indexing / Query canvas, MCP + orchestrator nodes, Azure OpenAI vs Ollama toggle, dashed Power BI and D365 dashboard (future)
+- `/architecture` **Architecture** — same nav row as Pipeline (active tab is filled). Contoso RAG bands + Release Watch. Empty: pre-load, no band selected, no Release Watch step (each with a pick CTA)
+- `/query` **Query** · `/graph` **Graph** · `/records` **Records** — Contoso demo corpus. Empty: no query yet, no-match, parked live-org error, no graph node, no record filter match
+- `/eval` **Eval** — empty until Architecture hands off a digest
+- `/` **Pipeline** — Indexing / Query canvas; empty detail until a node is picked
 - `/compare` **Compare** — Dataverse vs M365, plus a live sample list from the v2 API
 - `/impact` **Impact** — `TicketAnalysis` rows (Critical–Low, Feature vs Deprecated) against the sample inventory; optional bounded Learn wave pages
 - `/ask` **Ask** — one orchestrator agent, max five MCP tool steps, visible tool-call trace. Invalid Roadmap OData (`orderby: rollout`, `filter: rollout`) is rewritten from stored lessons; a 400 auto-retries with `modified desc` and the loop stops after the first good retrieve.

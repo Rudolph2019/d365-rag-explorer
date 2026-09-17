@@ -83,12 +83,30 @@ export function ReleaseWatchStrip({
   );
 }
 
-export function ReleaseWatchDetail({ step }: { step: WatchStep | undefined }) {
+export function ReleaseWatchDetail({
+  step,
+  onPick,
+}: {
+  step: WatchStep | undefined;
+  onPick?: () => void;
+}) {
   if (!step) {
     return (
-      <div className="rounded-xl border bg-card p-5 text-sm text-muted-foreground">
-        Select a Release Watch step. Env Swap inventory stays Contoso-only until
-        unparked. LLM impact compare emits in use / referenced only.
+      <div className="rounded-xl border border-dashed bg-muted/30 p-6">
+        <h3 className="font-heading text-sm font-semibold">No Release Watch step</h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Pick a step on the strip. Env Swap inventory stays Contoso-only until
+          unparked. LLM impact compare emits in use / referenced only.
+        </p>
+        {onPick ? (
+          <button
+            type="button"
+            onClick={onPick}
+            className={cn(buttonVariants({ size: "sm", variant: "outline" }), "mt-3")}
+          >
+            Pick LLM impact compare
+          </button>
+        ) : null}
       </div>
     );
   }

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArchitectureBand } from "@/components/architecture-band";
+import { EmptyAction, EmptyState } from "@/components/empty-state";
 import { ReleaseWatchDetail, ReleaseWatchStrip } from "@/components/release-watch-strip";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,11 +17,17 @@ import { CONTOSO_SANDBOX, LIVE_ORG_SWAP } from "@/lib/contoso";
 import { getWatchStep } from "@/lib/release-watch";
 
 export function ArchitectureView() {
-  const [archId, setArchId] = useState("contoso-source");
-  const [watchId, setWatchId] = useState("llm-compare");
+  const [ready, setReady] = useState(false);
+  const [archId, setArchId] = useState<string | null>(null);
+  const [watchId, setWatchId] = useState<string | null>(null);
   const [sheet, setSheet] = useState<"arch" | "watch" | null>(null);
-  const arch = getArchitectureNode(archId);
-  const watch = getWatchStep(watchId);
+  const arch = archId ? getArchitectureNode(archId) : undefined;
+  const watch = watchId ? getWatchStep(watchId) : undefined;
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setReady(true), 200);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   function selectArch(id: string) {
     setArchId(id);
@@ -72,12 +79,32 @@ export function ArchitectureView() {
         ))}
       </div>
 
-      <ArchitectureBand selectedId={archId} onSelect={selectArch} />
-      <ReleaseWatchStrip selectedId={watchId} onSelect={selectWatch} />
+      {!ready ? (
+        <EmptyState
+          title="Loading Contoso architecture"
+          actions={
+            <EmptyAction onClick={() => setReady(true)}>Show bands</EmptyAction>
+          }
+        >
+          Pre-loading the Sources → Citations band and Release Watch strip. Live
+          Dataverse is not contacted.
+        </EmptyState>
+      ) : (
+        <>
+          <ArchitectureBand selectedId={archId} onSelect={selectArch} />
+          <ReleaseWatchStrip selectedId={watchId} onSelect={selectWatch} />
+        </>
+      )}
 
       <div className="hidden gap-4 lg:grid lg:grid-cols-2">
-        <ArchDetail node={arch} />
-        <ReleaseWatchDetail step={watch} />
+        <ArchDetail
+          node={arch}
+          onPick={() => selectArch("contoso-source")}
+        />
+        <ReleaseWatchDetail
+          step={watch}
+          onPick={() => selectWatch("llm-compare")}
+        />
       </div>
 
       <Sheet
@@ -97,9 +124,15 @@ export function ArchitectureView() {
           </SheetHeader>
           <div className="px-4 pb-6">
             {sheet === "watch" ? (
-              <ReleaseWatchDetail step={watch} />
+              <ReleaseWatchDetail
+                step={watch}
+                onPick={() => selectWatch("llm-compare")}
+              />
             ) : (
-              <ArchDetail node={arch} />
+              <ArchDetail
+                node={arch}
+                onPick={() => selectArch("contoso-source")}
+              />
             )}
           </div>
         </SheetContent>
@@ -110,15 +143,21 @@ export function ArchitectureView() {
 
 function ArchDetail({
   node,
+  onPick,
 }: {
   node: ReturnType<typeof getArchitectureNode>;
+  onPick: () => void;
 }) {
   if (!node) {
     return (
-      <div className="rounded-xl border bg-card p-5 text-sm text-muted-foreground">
-        Select a node. Contoso sandbox is in use. Dashed env URL, Entra app /
-        client credentials, and WhoAmI are future swap labels only.
-      </div>
+      <EmptyState
+        title="No band selected"
+        actions={<EmptyAction onClick={onPick}>Pick Contoso sandbox</EmptyAction>}
+      >
+        Choose a node on the Sources → Retrieve → Agent loop → Citations band.
+        Dashed env URL, Entra app / client credentials, and WhoAmI stay future
+        swap labels only.
+      </EmptyState>
     );
   }
   return (

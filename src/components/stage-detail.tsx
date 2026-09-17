@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { EmptyAction, EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -15,17 +16,23 @@ type JobState = {
 export function StageDetail({
   stage,
   model,
+  onPick,
 }: {
   stage: PipelineStage | null;
   model: "azure" | "ollama";
+  onPick?: () => void;
 }) {
   if (!stage) {
     return (
-      <div className="rounded-xl border bg-card p-5 text-sm text-muted-foreground">
-        Select a stage on the canvas. Indexing shows ingest; Query shows the
-        orchestrator loop. Dashed Power BI and D365 dashboard nodes are future
-        Microsoft consumers — copy only.
-      </div>
+      <EmptyState
+        title="No pipeline stage selected"
+        actions={
+          onPick ? <EmptyAction onClick={onPick}>Pick MCP</EmptyAction> : null
+        }
+      >
+        Pick a node on the Indexing or Query canvas. Dashed Power BI and D365
+        dashboard nodes are future Microsoft consumers — copy only.
+      </EmptyState>
     );
   }
 

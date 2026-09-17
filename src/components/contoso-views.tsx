@@ -2,18 +2,24 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { EmptyAction, EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   CONTOSO_RECORDS,
   CONTOSO_SANDBOX,
   searchContoso,
   type ContosoRecord,
 } from "@/lib/contoso";
+import { cn } from "@/lib/utils";
+
+const PARKED_ERROR =
+  "Live Dataverse retrieve is parked. Env URL, Entra app / client credentials, and WhoAmI are labels only.";
 
 export function QueryView() {
   const [q, setQ] = useState("");
-  const hits = useMemo(() => searchContoso(q), [q]);
+  const [error, setError] = useState<string | null>(null);
+  const hits = useMemo(() => (q.trim() ? searchContoso(q) : []), [q]);
   const searchable = CONTOSO_RECORDS.filter((row) => row.usage !== "unused");
 
   return (
@@ -27,7 +33,10 @@ export function QueryView() {
         </p>
         <input
           value={q}
-          onChange={(event) => setQ(event.target.value)}
+          onChange={(event) => {
+            setError(null);
+            setQ(event.target.value);
+          }}
           placeholder="Work order leak, loyalty outage, Contoso Coffee…"
           className="mt-3 w-full rounded-md border bg-background px-3 py-2 text-sm"
         />
@@ -35,31 +44,88 @@ export function QueryView() {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => setQ("group head leak")}
+            onClick={() => {
+              setError(null);
+              setQ("group head leak");
+            }}
           >
-            Field ticket
+            Run sample query
           </Button>
           <Button
             size="sm"
             variant="outline"
-            onClick={() => setQ("loyalty")}
+            onClick={() => {
+              setError(null);
+              setQ("");
+            }}
+            disabled={!q && !error}
           >
-            Priority case
+            Clear filter
           </Button>
-          <Link href="/architecture">
-            <Button size="sm" variant="ghost">
-              Architecture
-            </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setError(PARKED_ERROR)}
+          >
+            Try live org
+          </Button>
+          <Link href="/architecture" className={cn(buttonVariants({ size: "sm", variant: "ghost" }))}>
+            Architecture
           </Link>
         </div>
       </div>
 
-      {hits.length === 0 ? (
-        <div className="rounded-xl border border-dashed bg-muted/30 p-8 text-sm text-muted-foreground">
-          No Contoso demo hits for “{q}”. Live-org retrieve is parked until
-          unparked. Try a Field Service or Customer Service term, or open
-          Records.
-        </div>
+      {error ? (
+        <EmptyState
+          title="Live Dataverse swap is parked"
+          actions={
+            <>
+              <EmptyAction
+                onClick={() => {
+                  setError(null);
+                  setQ("group head leak");
+                }}
+              >
+                Use Contoso sample
+              </EmptyAction>
+              <EmptyAction onClick={() => setError(null)}>Dismiss</EmptyAction>
+            </>
+          }
+        >
+          {error}
+        </EmptyState>
+      ) : !q.trim() ? (
+        <EmptyState
+          title="No query yet"
+          actions={
+            <>
+              <EmptyAction onClick={() => setQ("group head leak")}>
+                Run sample query
+              </EmptyAction>
+              <Link href="/records" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
+                Open Records
+              </Link>
+            </>
+          }
+        >
+          Pre-load is the Contoso demo corpus, not a tenant. Run a sample or
+          browse Records.
+        </EmptyState>
+      ) : hits.length === 0 ? (
+        <EmptyState
+          title="No Contoso matches"
+          actions={
+            <>
+              <EmptyAction onClick={() => setQ("")}>Clear filter</EmptyAction>
+              <EmptyAction onClick={() => setQ("loyalty")}>
+                Try “loyalty”
+              </EmptyAction>
+            </>
+          }
+        >
+          Nothing in the demo corpus for “{q}”. Unused ENT-17 is never
+          searchable. Live-org retrieve stays parked.
+        </EmptyState>
       ) : (
         <ul className="space-y-2">
           {hits.map((row) => (
@@ -77,7 +143,7 @@ export function QueryView() {
 
 export function GraphView() {
   const nodes = CONTOSO_RECORDS.filter((row) => row.usage !== "unused");
-  const [selected, setSelected] = useState<string | null>("WO-1042");
+  const [selected, setSelected] = useState<string | null>(null);
   const current = nodes.find((row) => row.id === selected);
 
   return (
@@ -91,10 +157,17 @@ export function GraphView() {
         </p>
       </div>
       {nodes.length === 0 ? (
-        <div className="rounded-xl border border-dashed bg-muted/30 p-8 text-sm text-muted-foreground">
-          No Contoso graph yet. Architecture still shows the retrieve → agent
-          loop.
-        </div>
+        <EmptyState
+          title="No Contoso graph"
+          actions={
+            <Link href="/architecture" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
+              Open Architecture
+            </Link>
+          }
+        >
+          Demo corpus has no in-use records. Architecture still shows the
+          retrieve → agent loop.
+        </EmptyState>
       ) : (
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
           <div className="flex flex-wrap gap-2 rounded-xl border bg-[linear-gradient(to_right,rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-[size:24px_24px] p-4">
@@ -117,36 +190,41 @@ export function GraphView() {
               </button>
             ))}
           </div>
-          <div className="rounded-xl border bg-card p-5">
-            {current ? (
-              <>
-                <p className="font-mono text-xs text-muted-foreground">{current.id}</p>
-                <h3 className="font-heading text-lg font-semibold">{current.title}</h3>
-                <p className="mt-2 text-sm">{current.summary}</p>
-                <p className="mt-3 text-xs font-medium text-muted-foreground">Related</p>
-                <div className="mt-1 flex flex-wrap gap-1.5">
-                  {current.related.length ? (
-                    current.related.map((id) => (
-                      <Button
-                        key={id}
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setSelected(id)}
-                      >
-                        {id}
-                      </Button>
-                    ))
-                  ) : (
-                    <p className="text-sm text-muted-foreground">No edges.</p>
-                  )}
-                </div>
-              </>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Select a node. Graph is Contoso-only until unparked.
-              </p>
-            )}
-          </div>
+          {current ? (
+            <div className="rounded-xl border bg-card p-5">
+              <p className="font-mono text-xs text-muted-foreground">{current.id}</p>
+              <h3 className="font-heading text-lg font-semibold">{current.title}</h3>
+              <p className="mt-2 text-sm">{current.summary}</p>
+              <p className="mt-3 text-xs font-medium text-muted-foreground">Related</p>
+              <div className="mt-1 flex flex-wrap gap-1.5">
+                {current.related.length ? (
+                  current.related.map((id) => (
+                    <Button
+                      key={id}
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setSelected(id)}
+                    >
+                      {id}
+                    </Button>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">No edges.</p>
+                )}
+              </div>
+            </div>
+          ) : (
+            <EmptyState
+              title="No node selected"
+              actions={
+                <EmptyAction onClick={() => setSelected("WO-1042")}>
+                  Pick WO-1042
+                </EmptyAction>
+              }
+            >
+              Choose a Contoso record on the graph. Live-org edges stay parked.
+            </EmptyState>
+          )}
         </div>
       )}
     </div>
@@ -154,8 +232,14 @@ export function GraphView() {
 }
 
 export function RecordsView() {
+  const [filter, setFilter] = useState("");
   const rows = CONTOSO_RECORDS;
-  const visible = rows.filter((row) => row.usage !== "unused");
+  const visible = rows.filter((row) => {
+    if (row.usage === "unused") return false;
+    if (!filter.trim()) return true;
+    const hay = `${row.id} ${row.title} ${row.area}`.toLowerCase();
+    return hay.includes(filter.trim().toLowerCase());
+  });
   const unused = rows.filter((row) => row.usage === "unused");
 
   return (
@@ -167,11 +251,31 @@ export function RecordsView() {
           Contoso demo corpus. LLM impact compare reads in use / referenced
           rows only.
         </p>
+        <input
+          value={filter}
+          onChange={(event) => setFilter(event.target.value)}
+          placeholder="Filter by id, title, or area"
+          className="mt-3 w-full rounded-md border bg-background px-3 py-2 text-sm"
+        />
       </div>
       {visible.length === 0 ? (
-        <div className="rounded-xl border border-dashed bg-muted/30 p-8 text-sm text-muted-foreground">
-          Demo corpus is empty. Architecture still labels Contoso as in use.
-        </div>
+        <EmptyState
+          title={filter.trim() ? "No records match" : "Demo corpus is empty"}
+          actions={
+            <>
+              {filter.trim() ? (
+                <EmptyAction onClick={() => setFilter("")}>Clear filter</EmptyAction>
+              ) : null}
+              <Link href="/query" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
+                Run sample query
+              </Link>
+            </>
+          }
+        >
+          {filter.trim()
+            ? `Nothing in use or referenced for “${filter}”. Unused ENT-17 stays skipped.`
+            : "Architecture still labels Contoso as in use."}
+        </EmptyState>
       ) : (
         <ul className="space-y-2">
           {visible.map((row) => (
@@ -208,16 +312,22 @@ export function EvalView() {
           a digest with citations.
         </p>
       </div>
-      <div className="rounded-xl border border-dashed bg-muted/30 p-8">
-        <p className="text-sm text-muted-foreground">
-          No eval run yet. Open Architecture, select Digest / what-breaks or
-          Retrieval Eval, then return here with cited Contoso ids (WO-1042,
-          CAS-4481, KA-881). Live-org eval is parked.
-        </p>
-        <Link href="/architecture" className="mt-4 inline-block">
-          <Button size="sm">Back to Architecture</Button>
-        </Link>
-      </div>
+      <EmptyState
+        title="No eval run yet"
+        actions={
+          <>
+            <Link href="/architecture" className={cn(buttonVariants({ size: "sm" }))}>
+              Pick digest on Architecture
+            </Link>
+            <Link href="/query" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
+              Run sample query
+            </Link>
+          </>
+        }
+      >
+        Open Architecture, select Digest / what-breaks, then come back with cited
+        Contoso ids (WO-1042, CAS-4481, KA-881). Live-org eval is parked.
+      </EmptyState>
     </div>
   );
 }
