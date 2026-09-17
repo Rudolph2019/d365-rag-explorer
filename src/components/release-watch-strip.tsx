@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
+import { EVAL_HANDOFF_HREF } from "@/lib/eval-handoff";
 import {
   FLAG_PACK,
   IMPACT_COMPARE,
@@ -152,12 +153,12 @@ export function ReleaseWatchDetail({
         </ul>
       ) : null}
 
-      {step.id === "eval" ? (
+      {step.id === "eval" || step.id === "digest" ? (
         <Link
-          href="/eval"
+          href={EVAL_HANDOFF_HREF}
           className={cn(buttonVariants({ size: "sm" }), "mt-4")}
         >
-          Open Retrieval Eval
+          Hand off to Retrieval Eval
         </Link>
       ) : null}
 
