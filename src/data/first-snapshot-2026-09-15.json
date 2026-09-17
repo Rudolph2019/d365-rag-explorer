@@ -1,0 +1,296 @@
+{
+  "snapshot_date": "2026-09-15",
+  "timezone": "America/Chicago",
+  "generated_for": "Release Watch (agent)",
+  "item_count": 32,
+  "items": [
+    {
+      "id": "wave-d365-2026w1",
+      "title": "Dynamics 365 2026 release wave 1 plan",
+      "product": "Dynamics 365",
+      "kind": "wave",
+      "dates": {"plans_available": "2026-03-18", "ga_start": "2026-04-01", "cycle_start": "2026-04-01", "cycle_end": "2026-09-30"},
+      "source_url": "https://learn.microsoft.com/en-us/dynamics365/release-plan/2026wave1/",
+      "notes": "Last traditional wave plan cycle Apr–Sep 2026; Learn page states release plans stop publishing Sep 2026."
+    },
+    {
+      "id": "wave-pp-2026w1",
+      "title": "Power Platform 2026 release wave 1 plan",
+      "product": "Power Platform",
+      "kind": "wave",
+      "dates": {"plans_available": "2026-03-18", "ga_start": "2026-04-01", "cycle_start": "2026-04-01", "cycle_end": "2026-09-30"},
+      "source_url": "https://learn.microsoft.com/en-us/power-platform/release-plan/2026wave1/",
+      "notes": "Covers Power Apps, Pages, Automate, Dataverse, governance."
+    },
+    {
+      "id": "plan-ai-at-work-transition",
+      "title": "Release Plans retire; AI at Work roadmap becomes primary",
+      "product": "Dynamics 365 / Power Platform / Dataverse",
+      "kind": "plan",
+      "dates": {"new_publishing_starts": "2026-09", "content_migration_window": "2026-09 to 2026-11", "release_planner_retires_by": "2026-11-15"},
+      "source_url": "https://www.microsoft.com/en-us/dynamics-365/blog/business-leader/2026/08/25/one-always-on-roadmap-dynamics-365-power-platform-and-dataverse-join-the-ai-at-work-roadmap/",
+      "notes": "FAQ: no Sep 2026 Wave 2 plan. Saved My Release Plans views do not carry over. Message Center remains tenant-change source."
+    },
+    {
+      "id": "plan-ai-at-work-roadmap",
+      "title": "AI at Work roadmap (live)",
+      "product": "Microsoft 365 / Dynamics 365 / Power Platform",
+      "kind": "plan",
+      "dates": {"continuous": true},
+      "source_url": "https://www.microsoft.com/en-us/microsoft-365/roadmap",
+      "notes": "aka.ms/AIatWorkRoadmap; filter/export/RSS; use for post-wave planning."
+    },
+    {
+      "id": "wave-2026w2-not-published",
+      "title": "2026 release wave 2 — not published (404 + FAQ No)",
+      "product": "Dynamics 365 / Power Platform",
+      "kind": "wave",
+      "dates": {"status": "will_not_be_published"},
+      "source_url": "https://www.microsoft.com/en-us/dynamics-365/blog/business-leader/2026/08/25/one-always-on-roadmap-dynamics-365-power-platform-and-dataverse-join-the-ai-at-work-roadmap/",
+      "notes": "Learn URLs /dynamics365/release-plan/2026wave2/ and /power-platform/release-plan/2026wave2/ returned HTTP 404 when fetched."
+    },
+    {
+      "id": "wave-2027w1-not-published",
+      "title": "2027 release wave 1 — not published (404)",
+      "product": "Dynamics 365 / Power Platform",
+      "kind": "wave",
+      "dates": {"status": "not_found"},
+      "source_url": "https://learn.microsoft.com/en-us/dynamics365/release-plans/",
+      "notes": "Tried /2027wave1/ for D365 and Power Platform — both 404. Hub only lists through 2026 wave 1."
+    },
+    {
+      "id": "dep-modern-look-enforced",
+      "title": "Classic look for model-driven apps no longer switchable",
+      "product": "Power Apps",
+      "kind": "deprecation",
+      "dates": {"effective": "2026-04"},
+      "source_url": "https://learn.microsoft.com/en-us/power-platform/important-changes-coming",
+      "notes": "All release channels including semi-annual; modern look default; admin settings removed. Also listed GA Apr 1 2026 in planned-features."
+    },
+    {
+      "id": "dep-editable-readonly-grids",
+      "title": "Editable Grid and Power Apps Read-Only Grid controls deprecated",
+      "product": "Power Apps (model-driven)",
+      "kind": "deprecation",
+      "dates": {"effective": "2026-03"},
+      "source_url": "https://learn.microsoft.com/en-us/power-platform/important-changes-coming",
+      "notes": "Continue until further notice; security fixes only; migrate to Power Apps grid control."
+    },
+    {
+      "id": "dep-pa-mobile-app",
+      "title": "Power Automate mobile app (iOS/Android) deprecated and removed from stores",
+      "product": "Power Automate",
+      "kind": "retirement",
+      "dates": {"effective": "2026-08-31"},
+      "source_url": "https://learn.microsoft.com/en-us/power-platform/important-changes-coming",
+      "notes": "Cloud flows unaffected. Alternatives: Teams Approvals, PA portal mobile browser, Power Apps mobile. Push/widget impacts."
+    },
+    {
+      "id": "dep-visio-pa-export",
+      "title": "Power Automate export from Visio desktop deprecated",
+      "product": "Power Automate",
+      "kind": "deprecation",
+      "dates": {"effective": "2026-07-14", "current_channel_as_early_as": "2026-06-30"},
+      "source_url": "https://learn.microsoft.com/en-us/power-platform/important-changes-coming",
+      "notes": "Existing exported flows continue; BPMN export UI removed."
+    },
+    {
+      "id": "dep-test-engine",
+      "title": "Test Engine deprecated",
+      "product": "Power Apps",
+      "kind": "deprecation",
+      "dates": {"effective": "2026-04"},
+      "source_url": "https://learn.microsoft.com/en-us/power-platform/important-changes-coming",
+      "notes": "Use Power Platform Playwright samples."
+    },
+    {
+      "id": "dep-byok-dataverse",
+      "title": "Dataverse bring-your-own-key (BYOK) support discontinued",
+      "product": "Dataverse",
+      "kind": "retirement",
+      "dates": {"support_ends": "2026-01-06", "no_new_byok_prod_from": "2025-06-01"},
+      "source_url": "https://learn.microsoft.com/en-us/power-platform/important-changes-coming",
+      "notes": "Migrate to customer-managed keys (CMK); otherwise auto-revert to Microsoft-managed keys."
+    },
+    {
+      "id": "dep-purview-audit-field-values",
+      "title": "Before/after field values removed from Purview-bound Dataverse audit events",
+      "product": "Dataverse",
+      "kind": "deprecation",
+      "dates": {"effective": "2026-05"},
+      "source_url": "https://learn.microsoft.com/en-us/power-platform/important-changes-coming",
+      "notes": "Use Dataverse native audit APIs/tables for field-level deltas; Purview keeps metadata only."
+    },
+    {
+      "id": "dep-soap-2011-endpoint",
+      "title": "2011 SOAP endpoint planned shutdown (no hard date)",
+      "product": "Dataverse",
+      "kind": "deprecation",
+      "dates": {"shutdown": "future_date_tbd"},
+      "source_url": "https://learn.microsoft.com/en-us/power-apps/developer/data-platform/sdk-client-transition",
+      "notes": "Clients must use CrmServiceClient or ServiceClient; those continue after endpoint shutdown. Prefer Microsoft.PowerPlatform.Dataverse.Client."
+    },
+    {
+      "id": "dep-odata-v2",
+      "title": "Organization Data Service (OData v2.0) removal deferred",
+      "product": "Dataverse",
+      "kind": "deprecation",
+      "dates": {"original_target": "2022-11-11", "extended_then_deferred_past": "2023-04-30", "final": "tbd"},
+      "source_url": "https://learn.microsoft.com/en-us/power-platform/important-changes-coming",
+      "notes": "Migrate to Web API OData v4; endpoint path /XRMServices/2011/OrganizationData.svc."
+    },
+    {
+      "id": "dep-dataverse-legacy-connector",
+      "title": "Microsoft Dataverse (legacy) connector deprecated",
+      "product": "Power Automate / Logic Apps",
+      "kind": "deprecation",
+      "dates": {"announced": "2022-10", "final_cutoff": "tbd"},
+      "source_url": "https://learn.microsoft.com/en-us/power-platform/important-changes-coming",
+      "notes": "Migrate to Microsoft Dataverse connector; migration assistant for many flows."
+    },
+    {
+      "id": "dep-sql-v1-actions",
+      "title": "SQL Server connector V1 actions disabled",
+      "product": "Power Automate",
+      "kind": "retirement",
+      "dates": {"unsupported_from": "2025-06-30"},
+      "source_url": "https://learn.microsoft.com/en-us/power-platform/important-changes-coming",
+      "notes": "Replace with V2 actions."
+    },
+    {
+      "id": "dep-canvas-deeplinks",
+      "title": "Canvas Power Apps mobile deep links require environment ID",
+      "product": "Power Apps",
+      "kind": "retirement",
+      "dates": {"effective": "2026-05-01"},
+      "source_url": "https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/important-changes-deprecations",
+      "notes": "Existing links without env ID stop working; recreate shortcuts."
+    },
+    {
+      "id": "dep-power-pages-wildcard-fields",
+      "title": "Power Pages Web API fields wildcard (*) removed",
+      "product": "Power Pages",
+      "kind": "retirement",
+      "dates": {"new_sites_blocked": "2026-08", "all_sites_removed": "2026-09-14"},
+      "source_url": "https://learn.microsoft.com/en-us/power-pages/important-changes-deprecations",
+      "notes": "Must set explicit column lists in Webapi/<table>/fields. Security hardening."
+    },
+    {
+      "id": "dep-power-pages-odata-feed",
+      "title": "Power Pages list OData feed removed",
+      "product": "Power Pages",
+      "kind": "retirement",
+      "dates": {"removed_by": "2026-06"},
+      "source_url": "https://learn.microsoft.com/en-us/power-pages/important-changes-deprecations",
+      "notes": "Migrate to Power Pages Web API."
+    },
+    {
+      "id": "dep-power-pages-table-permissions",
+      "title": "Table permissions enforced on all forms/lists",
+      "product": "Power Pages",
+      "kind": "deprecation",
+      "dates": {"effective": "2026-06"},
+      "source_url": "https://learn.microsoft.com/en-us/power-pages/important-changes-deprecations",
+      "notes": "Regardless of Enable Table Permissions setting."
+    },
+    {
+      "id": "ret-export-to-datalake",
+      "title": "Export to Data Lake (LCS add-in) permanently stops",
+      "product": "Dynamics 365 finance and operations / Dataverse analytics",
+      "kind": "retirement",
+      "dates": {"retired": "2024-11-01", "stops": "2026-11-30"},
+      "source_url": "https://learn.microsoft.com/en-us/power-apps/maker/data-platform/azure-synapse-link-transition-faq",
+      "notes": "No extensions. Transition to Link to Microsoft Fabric (low-latency) or Azure Synapse Link. Does not turn off Fabric/Synapse Link profiles."
+    },
+    {
+      "id": "dep-synapse-trusted-services",
+      "title": "Synapse trusted-services firewall exception retirement extended",
+      "product": "Azure Synapse Link / networking",
+      "kind": "retirement",
+      "dates": {"was": "2026-08-01", "now": "2027-08-01"},
+      "source_url": "https://learn.microsoft.com/en-us/power-apps/maker/data-platform/azure-synapse-link-transition-faq",
+      "notes": "Plan private endpoints / managed VNet for Synapse workspaces."
+    },
+    {
+      "id": "ret-dataflows-teams",
+      "title": "Power Platform dataflows in Dataverse for Teams retiring",
+      "product": "Dataverse for Teams",
+      "kind": "retirement",
+      "dates": {"no_new": "2026-09-01", "refresh_disabled": "2026-10-01", "entry_points_removed": "2026-10-31"},
+      "source_url": "https://learn.microsoft.com/en-us/power-query/dataflows/dataflows-teams",
+      "notes": "Does not affect dataflows outside Dataverse for Teams."
+    },
+    {
+      "id": "ret-ai-builder-credits",
+      "title": "End of AI Builder capacity add-ons and seeded credits calendar",
+      "product": "AI Builder",
+      "kind": "retirement",
+      "dates": {"addon_eol": "2026-11-01", "seeded_eol_calendar": "2026-11-01"},
+      "source_url": "https://learn.microsoft.com/en-us/ai-builder/endofaibcredits",
+      "notes": "No auto-conversion to Copilot Studio Credits; features continue on Copilot Credits. Contract terms may honor seeded/add-on through term."
+    },
+    {
+      "id": "dep-usd",
+      "title": "Unified Service Desk deprecated",
+      "product": "Dynamics 365 Customer Service",
+      "kind": "deprecation",
+      "dates": {"effective": "2026-04-01"},
+      "source_url": "https://learn.microsoft.com/en-us/dynamics365/customer-service/implement/deprecations-customer-service",
+      "notes": "Migrate to Copilot Service workspace."
+    },
+    {
+      "id": "ret-routing-diagnostics",
+      "title": "Unified routing diagnostics removed",
+      "product": "Dynamics 365 Customer Service",
+      "kind": "retirement",
+      "dates": {"removed": "2026-03-31"},
+      "source_url": "https://learn.microsoft.com/en-us/dynamics365/customer-service/implement/deprecations-customer-service",
+      "notes": "Use Conversation diagnostics in Azure Application Insights."
+    },
+    {
+      "id": "dep-cs-forecasting",
+      "title": "Customer Service forecasting deprecated",
+      "product": "Dynamics 365 Customer Service",
+      "kind": "deprecation",
+      "dates": {"support_ends": "2026-10-30"},
+      "source_url": "https://learn.microsoft.com/en-us/dynamics365/customer-service/implement/deprecations-customer-service",
+      "notes": "Use workforce engagement management forecast scenarios."
+    },
+    {
+      "id": "dep-apple-messages-biz",
+      "title": "Apple Messages for Business channel deprecated",
+      "product": "Dynamics 365 Customer Service",
+      "kind": "deprecation",
+      "dates": {"deprecated": "2026-07-17", "removed_from_admin": "2026-09-30"},
+      "source_url": "https://learn.microsoft.com/en-us/dynamics365/customer-service/implement/deprecations-customer-service",
+      "notes": "Contact Microsoft Support for alternative channel options."
+    },
+    {
+      "id": "ret-sales-hub-dialer",
+      "title": "Sales Hub Dialer (preview) deprecated and removed",
+      "product": "Dynamics 365 Sales",
+      "kind": "retirement",
+      "dates": {"effective": "2026-07"},
+      "source_url": "https://learn.microsoft.com/en-us/dynamics365/sales/deprecations-sales",
+      "notes": "Use Microsoft Teams dialer in Dynamics 365 Sales."
+    },
+    {
+      "id": "ret-sales-close-agent",
+      "title": "Sales Close Agent instances end",
+      "product": "Dynamics 365 Sales",
+      "kind": "retirement",
+      "dates": {"no_new_instances": "2026-09-30", "existing_removed": "2026-10-30"},
+      "source_url": "https://learn.microsoft.com/en-us/dynamics365/sales/deprecations-sales",
+      "notes": "Create Sales Development agent instead."
+    },
+    {
+      "id": "dep-sales-sharepoint-mcp-tools",
+      "title": "SharePoint MCP tools msdyn_GetDocumentSearchResults / msdyn_SalesAnswerFromDocuments deprecated",
+      "product": "Dynamics 365 Sales",
+      "kind": "deprecation",
+      "dates": {"effective": "2026-08"},
+      "source_url": "https://learn.microsoft.com/en-us/dynamics365/sales/deprecations-sales",
+      "notes": "Update customizations using these MCP tools."
+    }
+  ]
+}

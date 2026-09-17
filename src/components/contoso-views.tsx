@@ -11,6 +11,7 @@ import {
   searchContoso,
   type ContosoRecord,
 } from "@/lib/contoso";
+import { getEvalHandoff } from "@/lib/eval-handoff";
 import { cn } from "@/lib/utils";
 
 const PARKED_ERROR =
@@ -301,7 +302,9 @@ export function RecordsView() {
   );
 }
 
-export function EvalView() {
+export function EvalView({ search = "" }: { search?: string }) {
+  const { handedOff, citations } = getEvalHandoff(search);
+
   return (
     <div className="space-y-4">
       <ContosoBanner />
@@ -309,25 +312,89 @@ export function EvalView() {
         <h2 className="font-heading text-base font-semibold">Retrieval Eval</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Handoff from Release Watch. Eval stays empty until Architecture emits
-          a digest with citations.
+          a digest with citations. Contoso-only — no WhoAmI, no live inventory.
         </p>
       </div>
-      <EmptyState
-        title="No eval run yet"
-        actions={
-          <>
-            <Link href="/architecture" className={cn(buttonVariants({ size: "sm" }))}>
-              Pick digest on Architecture
-            </Link>
-            <Link href="/query" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
-              Run sample query
-            </Link>
-          </>
-        }
-      >
-        Open Architecture, select Digest / what-breaks, then come back with cited
-        Contoso ids (WO-1042, CAS-4481, KA-881). Live-org eval is parked.
-      </EmptyState>
+      {!handedOff || citations.length === 0 ? (
+        <EmptyState
+          title="No eval run yet"
+          actions={
+            <>
+              <Link href="/architecture" className={cn(buttonVariants({ size: "sm" }))}>
+                Pick digest on Architecture
+              </Link>
+              <Link href="/query" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
+                Run sample query
+              </Link>
+            </>
+          }
+        >
+          Open Architecture, select Digest / what-breaks, then hand off cited
+          Contoso ids (WO-1042, CAS-4481, KA-881). Live-org eval is parked.
+        </EmptyState>
+      ) : (
+        <section className="space-y-3 rounded-xl border bg-card p-5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h3 className="font-heading text-sm font-semibold">
+              Digest handoff · citation coverage
+            </h3>
+            <Badge variant="outline" className="border-amber-500 text-amber-900">
+              Contoso-only until unparked
+            </Badge>
+          </div>
+          <ul className="space-y-3">
+            {citations.map((row) => (
+              <li key={row.flagId} className="rounded-lg border bg-muted/30 px-3 py-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-mono text-[11px] text-muted-foreground">
+                    {row.flagId}
+                  </span>
+                  <span className="text-sm font-semibold">{row.flag}</span>
+                  <Badge
+                    variant="outline"
+                    className={
+                      row.usage === "in use"
+                        ? "border-emerald-600 text-emerald-800"
+                        : "border-sky-600 text-sky-800"
+                    }
+                  >
+                    {row.usage}
+                  </Badge>
+                  {row.prioritySeed ? (
+                    <Badge variant="secondary">priority seed</Badge>
+                  ) : null}
+                </div>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {row.contosoIds.map((id) => (
+                    <Badge key={id} variant="secondary" className="font-mono">
+                      {id}
+                    </Badge>
+                  ))}
+                </div>
+                <a
+                  href={row.sourceUrl}
+                  className="mt-2 inline-block text-xs text-sky-800 underline-offset-2 hover:underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {row.sourceLabel}
+                </a>
+                <p className="mt-1 font-mono text-[11px] break-all text-muted-foreground">
+                  {row.sourceUrl}
+                </p>
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-muted-foreground">
+            Citation coverage is scored against FLAG_PACK ids and their handoff
+            source_url keys. Unused inventory stays omitted. Live-org eval is
+            parked.
+          </p>
+          <Link href="/eval" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
+            Clear digest
+          </Link>
+        </section>
+      )}
     </div>
   );
 }

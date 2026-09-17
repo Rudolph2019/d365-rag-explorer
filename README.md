@@ -15,11 +15,17 @@ npm run dev
 
 Dev server: [http://127.0.0.1:43145](http://127.0.0.1:43145)
 
+Offline Retrieval Eval golden suite (citation handoff, no live org):
+
+```bash
+npm run eval:golden
+```
+
 Routes:
 
 - `/architecture` **Architecture** — same nav row as Pipeline (active tab is filled). Contoso RAG bands + Release Watch. Empty: pre-load, no band selected, no Release Watch step (each with a pick CTA)
 - `/query` **Query** · `/graph` **Graph** · `/records` **Records** — Contoso demo corpus. Empty: no query yet, no-match, parked live-org error, no graph node, no record filter match
-- `/eval` **Eval** — empty until Architecture hands off a digest
+- `/eval` **Eval** — empty until Architecture hands off a digest (`/eval?digest=1` shows FLAG_PACK ids, Contoso ids, and handoff `source_url`)
 - `/` **Pipeline** — Indexing / Query canvas; empty detail until a node is picked
 - `/compare` **Compare** — Dataverse vs M365, plus a live sample list from the v2 API
 - `/impact` **Impact** — `TicketAnalysis` rows (Critical–Low, Feature vs Deprecated) against the sample inventory; optional bounded Learn wave pages
@@ -82,7 +88,10 @@ Cursor config (`~/.cursor/mcp.json` or project `.cursor/mcp.json`):
 | --- | --- |
 | `src/lib/pipeline.ts` | Typed pipeline stages |
 | `src/lib/architecture.ts` | Contoso RAG architecture nodes |
-| `src/lib/release-watch.ts` | Release Watch strip + placeholder flags |
+| `src/lib/release-watch.ts` | Release Watch strip + 32-flag FLAG_PACK (handoff ids + source_url) |
+| `src/data/flags-handoff-retrieval-eval.json` | Release Watch flag pack handoff (citation_key = source_url) |
+| `src/data/first-snapshot-2026-09-15.json` | Snapshot notes/dates used for digest copy (no invented claims) |
+| `src/lib/eval-handoff.ts` | Digest handoff + golden eval scoring |
 | `src/lib/contoso.ts` | Contoso sandbox, demo corpus, future swap labels |
 | `src/lib/m365.ts` | Live Roadmap client |
 | `src/lib/impact.ts` | TicketAnalysis + Severity |
