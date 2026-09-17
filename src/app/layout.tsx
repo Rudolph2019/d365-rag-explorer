@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Dataverse RAG Explorer",
   description:
-    "Interactive Dataverse RAG pipeline with a live M365 Roadmap compare, impact ratings, MCP, and a local Ollama orchestrator.",
+    "Contoso sandbox RAG architecture, Release Watch, live M365 Roadmap compare, impact ratings, MCP, and a local Ollama orchestrator.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

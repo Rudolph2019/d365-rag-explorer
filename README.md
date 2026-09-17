@@ -1,6 +1,6 @@
 # Dataverse RAG Explorer
 
-Interactive architecture for a **Dataverse RAG** pipeline: indexing vs query, an in-repo **MCP** server, a live **M365 Roadmap** compare, and an **Impact** tab that rates public release items against a sample Dynamics solution inventory.
+Interactive architecture for a **Dataverse RAG** pipeline on the **Contoso sandbox** (in use until a live org is unparked): indexing vs query, Architecture + Release Watch, an in-repo **MCP** server, a live **M365 Roadmap** compare, and an **Impact** tab that rates public release items against a sample Dynamics solution inventory.
 
 Dataverse stays architecture-only (no tenant). Compare and Impact live-feed the public Microsoft 365 Roadmap API through a Next.js proxy.
 
@@ -17,6 +17,9 @@ Dev server: [http://127.0.0.1:43145](http://127.0.0.1:43145)
 
 Routes:
 
+- `/architecture` **Architecture** — Contoso RAG: Sources → Retrieve → Agent loop (planner / tools / critic) → Citations, plus Release Watch (signals → flag pack → Env Swap inventory · Contoso-only until unparked → in use / referenced / unused → LLM impact compare → digest → Retrieval Eval)
+- `/query` **Query** · `/graph` **Graph** · `/records` **Records** — Contoso demo corpus happy path (unused inventory skipped)
+- `/eval` **Retrieval Eval** — empty until Architecture hands off a digest
 - `/` **Pipeline** — Indexing / Query canvas, MCP + orchestrator nodes, Azure OpenAI vs Ollama toggle, dashed Power BI and D365 dashboard (future)
 - `/compare` **Compare** — Dataverse vs M365, plus a live sample list from the v2 API
 - `/impact` **Impact** — `TicketAnalysis` rows (Critical–Low, Feature vs Deprecated) against the sample inventory; optional bounded Learn wave pages
@@ -78,6 +81,9 @@ Cursor config (`~/.cursor/mcp.json` or project `.cursor/mcp.json`):
 | Path | Role |
 | --- | --- |
 | `src/lib/pipeline.ts` | Typed pipeline stages |
+| `src/lib/architecture.ts` | Contoso RAG architecture nodes |
+| `src/lib/release-watch.ts` | Release Watch strip + placeholder flags |
+| `src/lib/contoso.ts` | Contoso sandbox, demo corpus, future swap labels |
 | `src/lib/m365.ts` | Live Roadmap client |
 | `src/lib/impact.ts` | TicketAnalysis + Severity |
 | `src/lib/inventory.ts` | Sample Dynamics inventory |
