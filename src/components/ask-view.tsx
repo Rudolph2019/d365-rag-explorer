@@ -12,7 +12,9 @@ const EXAMPLES = [
 ];
 
 export function AskView({ initialQuestion }: { initialQuestion?: string }) {
-  const [question, setQuestion] = useState(initialQuestion ?? EXAMPLES[0]);
+  const [question, setQuestion] = useState(
+    initialQuestion ?? EXAMPLES[0],
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<OrchestratorAnswer | null>(null);
@@ -40,10 +42,14 @@ export function AskView({ initialQuestion }: { initialQuestion?: string }) {
   return (
     <div className="space-y-4">
       <div className="rounded-xl border bg-card p-5">
-        <h2 className="font-heading text-base font-semibold">Orchestrator loop</h2>
+        <h2 className="font-heading text-base font-semibold">
+          Orchestrator loop
+        </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          One agent, cap of five MCP tool steps. If Ollama is down there is no
-          loop — a keyword router plus a single retrieve or static explainer.
+          One agent, cap of five MCP tool steps. Failed OData is rewritten from
+          stored lessons, then the loop retrieves once and writes the answer. If
+          Ollama is down there is no loop — a keyword router plus a single
+          retrieve or static explainer.
         </p>
         <textarea
           value={question}
@@ -104,6 +110,27 @@ export function AskView({ initialQuestion }: { initialQuestion?: string }) {
                 ))}
               </ol>
             )}
+            {result.lessons?.length ? (
+              <div className="mt-4 border-t pt-3">
+                <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Lessons the loop remembered
+                </h4>
+                <ul className="space-y-1.5">
+                  {result.lessons.map((lesson) => (
+                    <li
+                      key={`${lesson.tool}-${lesson.field ?? "args"}-${lesson.bad}`}
+                      className="font-mono text-[11px] leading-snug text-muted-foreground"
+                    >
+                      {lesson.field ? `${lesson.tool}.${lesson.field}` : lesson.tool}{" "}
+                      rejected <span className="text-foreground">{lesson.bad}</span>
+                      {" → "}
+                      {lesson.fix || "(omit)"}{" "}
+                      <span className="text-muted-foreground/80">×{lesson.seen}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </section>
           <section className="rounded-xl border bg-card p-4">
             <h3 className="mb-2 text-sm font-semibold">Answer</h3>

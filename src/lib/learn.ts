@@ -41,15 +41,11 @@ function resolveHref(href: string, pageUrl: string): string {
   return new URL(href, pageUrl).toString();
 }
 
-function parseFeatureLinks(
-  html: string,
-  pageUrl: string,
-  area: string,
-  wave: ReleaseWave,
-) {
+function parseFeatureLinks(html: string, pageUrl: string, area: string, wave: ReleaseWave) {
   const features: LearnFeature[] = [];
   const seen = new Set<string>();
-  const rowRe = /<td[^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+  const rowRe =
+    /<td[^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
   let match: RegExpExecArray | null;
   while ((match = rowRe.exec(html))) {
     const href = match[1];

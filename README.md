@@ -20,7 +20,7 @@ Routes:
 - `/` **Pipeline** — Indexing / Query canvas, MCP + orchestrator nodes, Azure OpenAI vs Ollama toggle, dashed Power BI and D365 dashboard (future)
 - `/compare` **Compare** — Dataverse vs M365, plus a live sample list from the v2 API
 - `/impact` **Impact** — `TicketAnalysis` rows (Critical–Low, Feature vs Deprecated) against the sample inventory; optional bounded Learn wave pages
-- `/ask` **Ask** — one orchestrator agent, max five MCP tool steps, visible tool-call trace
+- `/ask` **Ask** — one orchestrator agent, max five MCP tool steps, visible tool-call trace. Invalid Roadmap OData (`orderby: rollout`, `filter: rollout`) is rewritten from stored lessons; a 400 auto-retries with `modified desc` and the loop stops after the first good retrieve.
 
 ## Ollama (optional)
 
@@ -81,7 +81,8 @@ Cursor config (`~/.cursor/mcp.json` or project `.cursor/mcp.json`):
 | `src/lib/m365.ts` | Live Roadmap client |
 | `src/lib/impact.ts` | TicketAnalysis + Severity |
 | `src/lib/inventory.ts` | Sample Dynamics inventory |
-| `src/lib/orchestrator.ts` | Ask tool loop |
+| `src/lib/orchestrator.ts` | Ask tool loop (self-heal + finalize) |
+| `src/lib/tool-memory.ts` | Persisted Ask lessons (`.data/tool-lessons.json`) |
 | `src/app/api/m365/route.ts` | Server proxy for the public API |
 | `src/app/api/impact/route.ts` | Impact rating |
 | `src/app/api/ask/route.ts` | Orchestrator |
