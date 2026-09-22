@@ -33,7 +33,7 @@ export function ArchitectureBand({
           Sources → Retrieve → Agent loop → Citations
         </span>
         <span className="hidden sm:inline">·</span>
-        <span>Planner / tools / critic · dashed nodes are parked Entra / WhoAmI</span>
+        <span>Planner / tools / critic · dashed nodes are parked live-org labels</span>
       </div>
 
       <svg

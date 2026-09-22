@@ -1,0 +1,73 @@
+{
+  "schema": "d365-rag-explorer.copilot-studio.agent.v1",
+  "name": "Release Watch Ticket Admin",
+  "environmentId": "cc72ef22-bdee-e93a-a41f-db16e6d3fe0c",
+  "makerHome": "https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home",
+  "publish": "spec-only",
+  "dataverse": "not-called-from-explorer",
+  "assignment": {
+    "role": "System Administrator",
+    "queue": "System Administrator",
+    "entity": "incident",
+    "entityDisplayName": "Case"
+  },
+  "severityChoice": {
+    "name": "TicketAnalysis severity",
+    "values": {
+      "Critical": 211460000,
+      "High": 211460001,
+      "Medium": 211460002,
+      "Low": 211460003
+    }
+  },
+  "topics": [
+    {
+      "id": "ingest-digest",
+      "name": "Ingest Release Watch digest",
+      "trigger": "Handoff payload from the explorer (/copilot-studio?digest=1) or the phrase analyze release watch.",
+      "instructions": "Accept only in use and referenced rows. Drop unused inventory (ENT-17) and unused-product flags. Require a Microsoft source_url on every row."
+    },
+    {
+      "id": "emit-ticketanalysis",
+      "name": "Emit TicketAnalysis",
+      "trigger": "After ingest-digest succeeds.",
+      "instructions": "For each remaining flag emit a TicketAnalysis row: title, description, url, area, severity, dataverseValue (211460000–211460003), effective_date, change_type (Feature|Deprecated), is_deferable, system_impact, reasoning, should_create_ticket, matched_solutions. Do not invent deprecation claims beyond the source_url page."
+    },
+    {
+      "id": "create-admin-cases",
+      "name": "Create Case tickets for System Administrator",
+      "trigger": "TicketAnalysis.should_create_ticket is true.",
+      "instructions": "Create incident (Case) records. Set title and description from TicketAnalysis. Set the TicketAnalysis severity choice to dataverseValue. Assign owner or queue to System Administrator. Do not create cases for unused rows."
+    }
+  ],
+  "tools": [
+    {
+      "id": "filter-digest",
+      "name": "Filter digest",
+      "kind": "topic-action",
+      "input": "Release Watch digest JSON",
+      "output": "in use / referenced rows only"
+    },
+    {
+      "id": "rate-ticketanalysis",
+      "name": "Rate TicketAnalysis",
+      "kind": "prompt",
+      "input": "Filtered digest row + Contoso inventory labels",
+      "output": "TicketAnalysis"
+    },
+    {
+      "id": "create-incident",
+      "name": "Create incident",
+      "kind": "dataverse-connector",
+      "table": "incident",
+      "operation": "Create a new Case record",
+      "bind": {
+        "title": "TicketAnalysis.title",
+        "description": "TicketAnalysis.description + source url",
+        "severity_choice": "TicketAnalysis.dataverseValue",
+        "owner_or_queue": "System Administrator"
+      },
+      "note": "Configured by the admin in Copilot Studio after publish. The explorer never calls Dataverse."
+    }
+  ]
+}

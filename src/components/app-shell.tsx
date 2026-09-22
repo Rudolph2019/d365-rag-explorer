@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 
 const TABS = [
   { href: "/architecture", id: "architecture", label: "Architecture" },
-  { href: "/dashboard", id: "dashboard", label: "Dashboard" },
   { href: "/", id: "pipeline", label: "Pipeline" },
   { href: "/compare", id: "compare", label: "Compare" },
   { href: "/impact", id: "impact", label: "Impact" },
@@ -17,7 +16,7 @@ const TABS = [
   { href: "/eval", id: "eval", label: "Eval" },
 ] as const;
 
-export type AppTab = (typeof TABS)[number]["id"];
+export type AppTab = (typeof TABS)[number]["id"] | "copilot-studio";
 
 export function AppShell({
   current,
@@ -38,8 +37,8 @@ export function AppShell({
               Dataverse RAG Explorer
             </h1>
             <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-              Contoso is the data path. Power Platform env URL is labeled on
-              Dashboard. WhoAmI and Entra secrets stay parked.
+              Contoso is the data path. Power Platform env URL is a parked
+              Architecture label. WhoAmI and Entra secrets stay parked.
             </p>
           </div>
           <OllamaStatus />

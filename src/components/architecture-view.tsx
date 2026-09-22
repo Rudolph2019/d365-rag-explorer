@@ -49,8 +49,8 @@ export function ArchitectureView() {
         <Badge className="bg-emerald-700 text-white">
           Contoso sandbox · {CONTOSO_SANDBOX.status}
         </Badge>
-        <Badge variant="outline" className="border-emerald-600 text-emerald-800">
-          URL configured
+        <Badge variant="outline" className="border-amber-500 text-amber-900">
+          Env URL parked
         </Badge>
         <Badge variant="outline" className="border-amber-500 text-amber-900">
           WhoAmI parked
@@ -178,7 +178,7 @@ function ArchDetail({
         actions={<EmptyAction onClick={onPick}>Pick Contoso sandbox</EmptyAction>}
       >
         Choose a node on the Sources → Retrieve → Agent loop → Citations band.
-        Env URL is labeled. Entra secrets and WhoAmI stay parked.
+        Env URL, Entra secrets, and WhoAmI stay parked labels.
       </EmptyState>
     );
   }

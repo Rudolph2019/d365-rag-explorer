@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { EVAL_HANDOFF_HREF } from "@/lib/eval-handoff";
+import { COPILOT_STUDIO_HANDOFF_HREF } from "@/lib/copilot-studio";
 import {
   FLAG_PACK,
   FLAG_PACK_PRIORITY_FIRST,
@@ -168,12 +169,17 @@ export function ReleaseWatchDetail({
       ) : null}
 
       {step.id === "eval" || step.id === "digest" ? (
-        <Link
-          href={EVAL_HANDOFF_HREF}
-          className={cn(buttonVariants({ size: "sm" }), "mt-4")}
-        >
-          Hand off to Retrieval Eval
-        </Link>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link href={EVAL_HANDOFF_HREF} className={cn(buttonVariants({ size: "sm" }))}>
+            Hand off to Retrieval Eval
+          </Link>
+          <Link
+            href={COPILOT_STUDIO_HANDOFF_HREF}
+            className={cn(buttonVariants({ size: "sm", variant: "outline" }))}
+          >
+            Send to Copilot Studio
+          </Link>
+        </div>
       ) : null}
 
       {step.id === "severity" ? (

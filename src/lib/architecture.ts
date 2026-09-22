@@ -29,7 +29,7 @@ export const ARCHITECTURE_NODES: ArchitectureNode[] = [
     badge: "in use",
     summary: "Demo CRM corpus for Field Service and Customer Service.",
     detail:
-      "Sources start here. Contoso is the sandbox in use: local work orders, cases, accounts, and knowledge articles. There is no live Dataverse call. The Power Platform env URL is labeled on Architecture and Dashboard; Entra secrets and WhoAmI stay parked.",
+      "Sources start here. Contoso is the sandbox in use: local work orders, cases, accounts, and knowledge articles. There is no live Dataverse call. The Power Platform env URL is a parked Architecture label; Entra secrets and WhoAmI stay parked.",
   },
   {
     id: "m365-source",
@@ -95,13 +95,13 @@ export const ARCHITECTURE_NODES: ArchitectureNode[] = [
   {
     id: "swap-env",
     title: "env URL",
-    kind: "source",
+    kind: "future",
     col: 5,
     row: 1,
-    badge: "URL configured",
+    dashed: true,
+    badge: "parked",
     summary: LIVE_ORG.makerHome.replace("https://", ""),
-    detail:
-      `Maker home for environment ${LIVE_ORG.environmentId}. This is a URL label only — Contoso remains the retrieve corpus. Open Dashboard for the live link.`,
+    detail: `Parked label for environment ${LIVE_ORG.environmentId}. Maker home is a link only — Contoso remains the retrieve corpus. No MCP, no secrets, no live Dataverse call.`,
   },
   {
     id: "swap-entra",
