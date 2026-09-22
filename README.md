@@ -32,40 +32,33 @@ Routes:
 
 ## Release Ticket table (`cr_releaseticket`)
 
-Logical name: **`cr_releaseticket`**. Schema: `src/data/cr_releaseticket.schema.json`.
+**Release Ticket** already exists in Maker for environment `cc72ef22-bdee-e93a-a41f-db16e6d3fe0c`. Schema: `src/data/cr_releaseticket.schema.json`. Preferred logical name: **`cr_releaseticket`**. Maker may have used a publisher prefix other than `cr_` — **confirm the logical name from table properties**. Primary column display name is **Title**.
 
-This VM had **no Dataverse / Entra secrets**, so the table was **not** created via Web API (`createdViaWebApi: false`, **AUTH SKIPPED**). Do not invent credentials. Create it in Maker for environment `cc72ef22-bdee-e93a-a41f-db16e6d3fe0c`.
+The explorer has **no Dataverse / Entra secrets** (`createdViaWebApi: false`, **AUTH SKIPPED**). Do not invent credentials. This app never calls Dataverse.
 
-### Maker steps
+### Maker columns (confirm prefix from table properties)
 
-1. Open [maker home](https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home).
-2. Left nav → **Tables** → **New table**.
-3. Display name **Release Ticket**. Plural **Release Tickets**.
-4. Advanced: schema name `cr_ReleaseTicket` (logical name `cr_releaseticket`), publisher prefix `cr_`, ownership **User** (UserOwned). Primary column **Title** (`cr_title`).
-5. Add columns from the schema JSON:
-
-| Display name | Logical name | Type | Notes |
+| Display name | Preferred logical name | Type | Notes |
 | --- | --- | --- | --- |
 | Title | `cr_title` | Single line of text | Primary name. TicketAnalysis `title` |
 | Description | `cr_description` | Multiple lines of text (2000) | TicketAnalysis `description` |
 | URL | `cr_url` | Single line of text, URL | TicketAnalysis `url` |
 | Area | `cr_area` | Single line of text | TicketAnalysis `area` |
-| Severity | `cr_severity` | Choice **TicketAnalysis severity** | Critical **211460000**, High **211460001**, Medium **211460002**, Low **211460003** |
+| Severity | `cr_severity` | Choice, single | Critical **644640000**, High **644640001**, Medium **644640002**, Low **644640003**. Do not use 211460000. |
 | Effective date | `cr_effective_date` | Date only | TicketAnalysis `effective_date` |
-| Change type | `cr_change_type` | Choice **Change type** | Feature **211460010**, Deprecated **211460011** (not the severity ints) |
+| Change type | `cr_change_type` | Choice, single | Feature **644640000**, Deprecated **644640001**. Do not use 211460010. Bind by column — Feature and Critical share 644640000. |
 | Source URL | `cr_source_url` | Single line of text, URL | TicketAnalysis `source_url` / citation |
 
-6. Save. Confirm the table logical name is **`cr_releaseticket`**.
-7. Assign **Owner** to a user in the **System Administrator** role. Do **not** use a Case queue.
+Assign **Owner** to a user in the **System Administrator** role. Do **not** use a Case queue.
 
 ## Copilot Studio (admin publish)
 
-The explorer does **not** publish the agent. Spec: `src/data/copilot-studio-agent.json`. Bind to **`cr_releaseticket`**, not Case (`incident`).
+The explorer does **not** publish the agent. Spec: `src/data/copilot-studio-agent.json`. Bind to **Release Ticket** (preferred **`cr_releaseticket`**; confirm logical name from table properties), not Case (`incident`).
 
 1. Open [maker home](https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home) for environment `cc72ef22-bdee-e93a-a41f-db16e6d3fe0c`.
 2. Copilot Studio → new agent **Release Watch Ticket Admin**.
-3. Add the three topics (ingest digest, emit TicketAnalysis, create admin tickets) and the Dataverse **Create a new row** tool bound to **Release Ticket** (`cr_releaseticket`).
-4. Map TicketAnalysis `dataverseValue` to `cr_severity` (**211460000–211460003**). Map `change_type` to `cr_change_type` (**211460010** Feature, **211460011** Deprecated). Assign **Owner** to **System Administrator**.
+3. Add the three topics (ingest digest, emit TicketAnalysis, create admin tickets) and the Dataverse **Create a new row** tool bound to **Release Ticket**.
+4. Map TicketAnalysis `dataverseValue` to **Severity** (**644640000–644640003**). Map `change_type` to **Change type** (**644640000** Feature, **644640001** Deprecated). Assign **Owner** to **System Administrator**.
 5. Ingest only in use / referenced digest rows. Skip unused (ENT-17 and unused-product flags).
 6. Publish in that environment. This repo never stores client secrets and never calls Dataverse.
 
@@ -148,7 +141,7 @@ Cursor config (`~/.cursor/mcp.json` or project `.cursor/mcp.json`):
 | `src/lib/eval-handoff.ts` | Digest handoff + golden eval scoring |
 | `src/lib/live-org.ts` | Parked env id + maker URL labels |
 | `src/lib/contoso.ts` | Contoso sandbox demo corpus |
-| `src/lib/impact.ts` | TicketAnalysis + Severity `211460000`–`211460003` |
+| `src/lib/impact.ts` | TicketAnalysis + Maker Severity `644640000`–`644640003` |
 | `mcp/server.ts` | stdio MCP server (explorer tools only — not Copilot Studio) |
 
 ## Out of scope

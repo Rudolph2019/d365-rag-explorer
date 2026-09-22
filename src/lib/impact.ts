@@ -13,15 +13,15 @@ export type ChangeType = "Feature" | "Deprecated";
 export type ImpactSource = "m365_roadmap" | "learn_release_plan";
 
 export const SEVERITY = {
-  Critical: { name: "Critical" as const, dataverseValue: 211460000 },
-  High: { name: "High" as const, dataverseValue: 211460001 },
-  Medium: { name: "Medium" as const, dataverseValue: 211460002 },
-  Low: { name: "Low" as const, dataverseValue: 211460003 },
+  Critical: { name: "Critical" as const, dataverseValue: 644640000 },
+  High: { name: "High" as const, dataverseValue: 644640001 },
+  Medium: { name: "Medium" as const, dataverseValue: 644640002 },
+  Low: { name: "Low" as const, dataverseValue: 644640003 },
 };
 
 export const CHANGE_TYPE = {
-  Feature: { name: "Feature" as const, dataverseValue: 211460010 },
-  Deprecated: { name: "Deprecated" as const, dataverseValue: 211460011 },
+  Feature: { name: "Feature" as const, dataverseValue: 644640000 },
+  Deprecated: { name: "Deprecated" as const, dataverseValue: 644640001 },
 };
 
 export const DEFAULT_SEVERITY = SEVERITY.Medium;

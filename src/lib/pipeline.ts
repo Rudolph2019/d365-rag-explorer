@@ -140,7 +140,7 @@ export const PIPELINE_STAGES: PipelineStage[] = [
     kind: "process",
     summary: "TicketAnalysis: Critical–Low, Feature vs Deprecated.",
     detail:
-      "Matches live Roadmap items (and a bounded Learn wave) to the solution inventory. Fills TicketAnalysis: title, description, url, area, severity, effective_date, change_type, is_deferable, system_impact, reasoning, should_create_ticket. Severity option-set ints 211460000–211460003 are kept as dataverseValue for a future D365 ticket. Ollama fills severity and reasoning when online; otherwise unique-name/area map + deprecation-phrase scan, default Medium. Past effective dates are not actionable.",
+      "Matches live Roadmap items (and a bounded Learn wave) to the solution inventory. Fills TicketAnalysis: title, description, url, area, severity, effective_date, change_type, is_deferable, system_impact, reasoning, should_create_ticket. Severity option-set ints 644640000–644640003 are Maker Severity values on Release Ticket. Ollama fills severity and reasoning when online; otherwise unique-name/area map + deprecation-phrase scan, default Medium. Past effective dates are not actionable.",
     llmJob: "impact",
     mcpTools: ["rate_roadmap_impact"],
   },

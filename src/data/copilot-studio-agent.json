@@ -11,26 +11,29 @@
     "owner": "System Administrator",
     "queue": null,
     "entity": "cr_releaseticket",
-    "entityDisplayName": "Release Ticket"
+    "entityDisplayName": "Release Ticket",
+    "logicalNameNote": "Preferred logical name cr_releaseticket. Confirm from table properties if Maker used another publisher prefix."
   },
   "severityChoice": {
-    "name": "TicketAnalysis severity",
+    "name": "Severity",
     "logicalName": "cr_ticketanalysisseverity",
     "column": "cr_severity",
+    "source": "Maker",
     "values": {
-      "Critical": 211460000,
-      "High": 211460001,
-      "Medium": 211460002,
-      "Low": 211460003
+      "Critical": 644640000,
+      "High": 644640001,
+      "Medium": 644640002,
+      "Low": 644640003
     }
   },
   "changeTypeChoice": {
     "name": "Change type",
     "logicalName": "cr_changetype",
     "column": "cr_change_type",
+    "source": "Maker",
     "values": {
-      "Feature": 211460010,
-      "Deprecated": 211460011
+      "Feature": 644640000,
+      "Deprecated": 644640001
     }
   },
   "topics": [
@@ -44,13 +47,13 @@
       "id": "emit-ticketanalysis",
       "name": "Emit TicketAnalysis",
       "trigger": "After ingest-digest succeeds.",
-      "instructions": "For each remaining flag emit a TicketAnalysis row: title, description, url, area, severity, dataverseValue (211460000–211460003), effective_date, change_type (Feature|Deprecated), is_deferable, system_impact, reasoning, should_create_ticket, matched_solutions. Do not invent deprecation claims beyond the source_url page."
+      "instructions": "For each remaining flag emit a TicketAnalysis row: title, description, url, area, severity, dataverseValue (Maker Severity 644640000–644640003), effective_date, change_type (Feature|Deprecated), is_deferable, system_impact, reasoning, should_create_ticket, matched_solutions. Do not invent deprecation claims beyond the source_url page. Do not use 211460000 or 211460010."
     },
     {
       "id": "create-admin-tickets",
       "name": "Create Release Ticket rows for System Administrator",
       "trigger": "TicketAnalysis.should_create_ticket is true.",
-      "instructions": "Create cr_releaseticket (Release Ticket) records — not Case/incident. Map title, description, url, area, severity, effective_date, change_type, and source_url. Set cr_severity to TicketAnalysis.dataverseValue (211460000–211460003). Set cr_change_type to 211460010 (Feature) or 211460011 (Deprecated). Assign Owner to a user in the System Administrator role. Do not use a Case queue. Do not create rows for unused digest flags."
+      "instructions": "Create Release Ticket records on the Maker table (preferred logical name cr_releaseticket; confirm from table properties) — not Case/incident. Map Title, description, url, area, severity, effective_date, change_type, and source_url. Set Severity to TicketAnalysis.dataverseValue (Critical 644640000, High 644640001, Medium 644640002, Low 644640003). Set Change type to Feature 644640000 or Deprecated 644640001. Bind by column because Feature and Critical share 644640000. Assign Owner to a user in the System Administrator role. Do not use a Case queue. Do not create rows for unused digest flags."
     }
   ],
   "tools": [
@@ -75,17 +78,17 @@
       "table": "cr_releaseticket",
       "operation": "Create a new Release Ticket row",
       "bind": {
-        "cr_title": "TicketAnalysis.title",
+        "cr_title": "TicketAnalysis.title (Maker primary column Title)",
         "cr_description": "TicketAnalysis.description",
         "cr_url": "TicketAnalysis.url",
         "cr_area": "TicketAnalysis.area",
-        "cr_severity": "TicketAnalysis.dataverseValue",
+        "cr_severity": "TicketAnalysis.dataverseValue (Critical=644640000 High=644640001 Medium=644640002 Low=644640003)",
         "cr_effective_date": "TicketAnalysis.effective_date",
-        "cr_change_type": "TicketAnalysis.change_type (Feature=211460010, Deprecated=211460011)",
+        "cr_change_type": "TicketAnalysis.change_type (Feature=644640000, Deprecated=644640001)",
         "cr_source_url": "TicketAnalysis.url",
         "ownerid": "System Administrator"
       },
-      "note": "Configured by the admin in Copilot Studio after the Maker table exists. The explorer never calls Dataverse."
+      "note": "Configured by the admin in Copilot Studio against the Maker table. Confirm the table logical name from table properties if the publisher prefix is not cr_. The explorer never calls Dataverse."
     }
   ]
 }

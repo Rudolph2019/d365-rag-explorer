@@ -10,7 +10,7 @@
       "title": "Open admin tickets from Copilot Studio",
       "entity": "cr_releaseticket",
       "filter": "statecode = Active AND owner = System Administrator AND origin is Release Watch Ticket Admin",
-      "visual": "column or tag chart of open Release Ticket counts by TicketAnalysis severity (211460000–211460003)"
+      "visual": "column or tag chart of open Release Ticket counts by Maker Severity (644640000–644640003)"
     },
     {
       "id": "release-watch-in-use",

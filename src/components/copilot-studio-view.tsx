@@ -102,10 +102,11 @@ export function CopilotStudioView({ search = "" }: { search?: string }) {
               Sample Release Ticket preview · System Administrator owner
             </h3>
             <p className="mt-1 text-xs text-muted-foreground">
-              Severity ints {SEVERITY.Critical.dataverseValue}–
+              Maker Severity {SEVERITY.Critical.dataverseValue}–
               {SEVERITY.Low.dataverseValue}. {payload.releaseTickets.length}{" "}
               preview rows from {payload.tickets.length} TicketAnalysis records.
-              Table create AUTH SKIPPED.
+              Confirm logical name from table properties. Explorer does not call
+              Dataverse.
             </p>
             <ul className="mt-3 space-y-3">
               {payload.releaseTickets.map((row) => (

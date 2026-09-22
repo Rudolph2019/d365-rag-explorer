@@ -161,7 +161,7 @@ export function buildCopilotStudioHandoff(
     createdViaWebApi: false,
     auth: "SKIPPED",
     message:
-      "No tenant credentials in this explorer. Sample cr_releaseticket preview only — Dataverse is not called. AUTH SKIPPED.",
+      "No tenant credentials in this explorer. Sample cr_releaseticket preview only — Dataverse is not called. Maker table exists; AUTH SKIPPED for this app.",
     tickets,
     releaseTickets,
   };
@@ -220,13 +220,26 @@ export function scoreReleaseTicketWiring(): ReleaseTicketWiringCheck[] {
       id: "severity-choice",
       pass:
         JSON.stringify(severityValues) ===
-        JSON.stringify([211460000, 211460001, 211460002, 211460003]),
+        JSON.stringify([644640000, 644640001, 644640002, 644640003]) &&
+        SEVERITY.Critical.dataverseValue === 644640000,
       detail: `severity values ${severityValues?.join(",") ?? "missing"}`,
     },
     {
       id: "change-type-choice",
-      pass: JSON.stringify(changeValues) === JSON.stringify([211460010, 211460011]),
+      pass:
+        JSON.stringify(changeValues) === JSON.stringify([644640000, 644640001]) &&
+        CHANGE_TYPE.Feature.dataverseValue === 644640000,
       detail: `change type values ${changeValues?.join(",") ?? "missing"}`,
+    },
+    {
+      id: "no-legacy-choice-ints",
+      pass: ![
+        ...(severityValues ?? []),
+        ...(changeValues ?? []),
+        SEVERITY.Critical.dataverseValue,
+        CHANGE_TYPE.Feature.dataverseValue,
+      ].some((value) => value >= 211460000 && value <= 211460011),
+      detail: "Maker choice ints 644640000+; 211460000/211460010 unused",
     },
     {
       id: "columns",
