@@ -5,19 +5,19 @@
   "makerHome": "https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home",
   "publish": "spec-only",
   "dataverse": "not-called-from-explorer",
-  "tableSchema": "src/data/cr_releaseticket.schema.json",
+  "tableSchema": "src/data/cr458_releaseticket.schema.json",
   "assignment": {
     "role": "System Administrator",
     "owner": "System Administrator",
     "queue": null,
-    "entity": "cr_releaseticket",
+    "entity": "cr458_releaseticket",
     "entityDisplayName": "Release Ticket",
-    "logicalNameNote": "Preferred logical name cr_releaseticket. Confirm from table properties if Maker used another publisher prefix."
+    "schemaName": "cr458_ReleaseTicket"
   },
   "severityChoice": {
     "name": "Severity",
-    "logicalName": "cr_ticketanalysisseverity",
-    "column": "cr_severity",
+    "logicalName": "cr458_severity",
+    "column": "cr458_severity",
     "source": "Maker",
     "values": {
       "Critical": 644640000,
@@ -28,8 +28,8 @@
   },
   "changeTypeChoice": {
     "name": "Change type",
-    "logicalName": "cr_changetype",
-    "column": "cr_change_type",
+    "logicalName": "cr458_changetype",
+    "column": "cr458_change_type",
     "source": "Maker",
     "values": {
       "Feature": 644640000,
@@ -53,7 +53,7 @@
       "id": "create-admin-tickets",
       "name": "Create Release Ticket rows for System Administrator",
       "trigger": "TicketAnalysis.should_create_ticket is true.",
-      "instructions": "Create Release Ticket records on the Maker table (preferred logical name cr_releaseticket; confirm from table properties) — not Case/incident. Map Title, description, url, area, severity, effective_date, change_type, and source_url. Set Severity to TicketAnalysis.dataverseValue (Critical 644640000, High 644640001, Medium 644640002, Low 644640003). Set Change type to Feature 644640000 or Deprecated 644640001. Bind by column because Feature and Critical share 644640000. Assign Owner to a user in the System Administrator role. Do not use a Case queue. Do not create rows for unused digest flags."
+      "instructions": "Create rows on cr458_releaseticket (schema name cr458_ReleaseTicket, display name Release Ticket) — not Case/incident. Map Title (cr458_title if custom, else cr458_name), description, url, area, severity, effective_date, change_type, and source_url. Set cr458_severity to TicketAnalysis.dataverseValue (Critical 644640000, High 644640001, Medium 644640002, Low 644640003). Set cr458_change_type to Feature 644640000 or Deprecated 644640001. Bind by column because Feature and Critical share 644640000. Assign Owner to a user in the System Administrator role. Do not use a Case queue. Do not create rows for unused digest flags."
     }
   ],
   "tools": [
@@ -75,20 +75,21 @@
       "id": "create-releaseticket",
       "name": "Create Release Ticket",
       "kind": "dataverse-connector",
-      "table": "cr_releaseticket",
+      "table": "cr458_releaseticket",
       "operation": "Create a new Release Ticket row",
       "bind": {
-        "cr_title": "TicketAnalysis.title (Maker primary column Title)",
-        "cr_description": "TicketAnalysis.description",
-        "cr_url": "TicketAnalysis.url",
-        "cr_area": "TicketAnalysis.area",
-        "cr_severity": "TicketAnalysis.dataverseValue (Critical=644640000 High=644640001 Medium=644640002 Low=644640003)",
-        "cr_effective_date": "TicketAnalysis.effective_date",
-        "cr_change_type": "TicketAnalysis.change_type (Feature=644640000, Deprecated=644640001)",
-        "cr_source_url": "TicketAnalysis.url",
+        "cr458_title": "TicketAnalysis.title when primary is custom Title — confirm from column properties",
+        "cr458_name": "TicketAnalysis.title when Maker primary is still Name",
+        "cr458_description": "TicketAnalysis.description",
+        "cr458_url": "TicketAnalysis.url",
+        "cr458_area": "TicketAnalysis.area",
+        "cr458_severity": "TicketAnalysis.dataverseValue (Critical=644640000 High=644640001 Medium=644640002 Low=644640003)",
+        "cr458_effective_date": "TicketAnalysis.effective_date",
+        "cr458_change_type": "TicketAnalysis.change_type (Feature=644640000, Deprecated=644640001)",
+        "cr458_source_url": "TicketAnalysis.url",
         "ownerid": "System Administrator"
       },
-      "note": "Configured by the admin in Copilot Studio against the Maker table. Confirm the table logical name from table properties if the publisher prefix is not cr_. The explorer never calls Dataverse."
+      "note": "Configured by the admin in Copilot Studio against cr458_releaseticket. Confirm whether Title maps to cr458_title or cr458_name. The explorer never calls Dataverse."
     }
   ]
 }

@@ -1,5 +1,5 @@
 import agentSpec from "@/data/copilot-studio-agent.json";
-import releaseTicketSchema from "@/data/cr_releaseticket.schema.json";
+import releaseTicketSchema from "@/data/cr458_releaseticket.schema.json";
 import { isDigestHandoff } from "@/lib/eval-handoff";
 import {
   applyTicketGates,
@@ -28,7 +28,7 @@ export const RELEASE_TICKET_DISPLAY_NAME = releaseTicketSchema.displayName;
 export const COPILOT_STUDIO_AGENT = agentSpec;
 
 export type SampleReleaseTicket = {
-  logicalName: "cr_releaseticket";
+  logicalName: "cr458_releaseticket";
   displayName: "Release Ticket";
   flagId: string;
   title: string;
@@ -54,7 +54,7 @@ export type CopilotStudioHandoff = {
   unusedOmitted: true;
   dataverseCalled: false;
   credentials: "none";
-  tableLogicalName: "cr_releaseticket";
+  tableLogicalName: "cr458_releaseticket";
   createdViaWebApi: false;
   auth: "SKIPPED";
   message: string;
@@ -120,7 +120,7 @@ export function ticketToSampleReleaseTicket(
   flagId: string,
 ): SampleReleaseTicket {
   return {
-    logicalName: "cr_releaseticket",
+    logicalName: "cr458_releaseticket",
     displayName: "Release Ticket",
     flagId,
     title: ticket.title,
@@ -157,11 +157,11 @@ export function buildCopilotStudioHandoff(
     unusedOmitted: true,
     dataverseCalled: false,
     credentials: "none",
-    tableLogicalName: "cr_releaseticket",
+    tableLogicalName: "cr458_releaseticket",
     createdViaWebApi: false,
     auth: "SKIPPED",
     message:
-      "No tenant credentials in this explorer. Sample cr_releaseticket preview only — Dataverse is not called. Maker table exists; AUTH SKIPPED for this app.",
+      "No tenant credentials in this explorer. Sample cr458_releaseticket preview only — Dataverse is not called. Maker table exists; AUTH SKIPPED for this app.",
     tickets,
     releaseTickets,
   };
@@ -188,32 +188,33 @@ export function scoreReleaseTicketWiring(): ReleaseTicketWiringCheck[] {
   const agentTable = agentSpec.assignment.entity;
   const tool = agentSpec.tools.find((item) => item.id === "create-releaseticket");
   const severityValues = releaseTicketSchema.choiceSets
-    .find((set) => set.logicalName === "cr_ticketanalysisseverity")
+    .find((set) => set.columnLogicalName === "cr458_severity")
     ?.options.map((option) => option.value);
   const changeValues = releaseTicketSchema.choiceSets
-    .find((set) => set.logicalName === "cr_changetype")
+    .find((set) => set.columnLogicalName === "cr458_change_type")
     ?.options.map((option) => option.value);
   const requiredColumns = [
-    "cr_title",
-    "cr_description",
-    "cr_url",
-    "cr_area",
-    "cr_severity",
-    "cr_effective_date",
-    "cr_change_type",
-    "cr_source_url",
+    "cr458_description",
+    "cr458_url",
+    "cr458_area",
+    "cr458_severity",
+    "cr458_effective_date",
+    "cr458_change_type",
+    "cr458_source_url",
   ];
   const columnNames = releaseTicketSchema.columns.map((column) => column.logicalName);
+  const hasPrimaryCandidate =
+    columnNames.includes("cr458_title") && columnNames.includes("cr458_name");
 
   return [
     {
       id: "logical-name",
-      pass: logical === "cr_releaseticket" && agentTable === "cr_releaseticket",
+      pass: logical === "cr458_releaseticket" && agentTable === "cr458_releaseticket",
       detail: `schema ${logical}; agent ${agentTable}`,
     },
     {
       id: "not-incident",
-      pass: agentTable !== "incident" && tool?.table === "cr_releaseticket",
+      pass: agentTable !== "incident" && tool?.table === "cr458_releaseticket",
       detail: `create tool table ${tool?.table ?? "missing"}`,
     },
     {
@@ -243,7 +244,9 @@ export function scoreReleaseTicketWiring(): ReleaseTicketWiringCheck[] {
     },
     {
       id: "columns",
-      pass: requiredColumns.every((name) => columnNames.includes(name)),
+      pass:
+        requiredColumns.every((name) => columnNames.includes(name)) &&
+        hasPrimaryCandidate,
       detail: `columns ${columnNames.join(",")}`,
     },
     {

@@ -41,7 +41,9 @@ export function CopilotStudioView({ search = "" }: { search?: string }) {
         <p className="mt-1 text-sm text-muted-foreground">
           Agent topics ingest the Release Watch digest (in use / referenced),
           emit TicketAnalysis rows, and create{" "}
-          <span className="font-mono text-foreground">cr_releaseticket</span>{" "}
+          <span className="font-mono text-foreground">
+            {RELEASE_TICKET_LOGICAL_NAME}
+          </span>{" "}
           rows owned by System Administrator. Publish happens in Copilot Studio
           in this environment — this explorer never calls Dataverse.
         </p>
@@ -105,8 +107,8 @@ export function CopilotStudioView({ search = "" }: { search?: string }) {
               Maker Severity {SEVERITY.Critical.dataverseValue}–
               {SEVERITY.Low.dataverseValue}. {payload.releaseTickets.length}{" "}
               preview rows from {payload.tickets.length} TicketAnalysis records.
-              Confirm logical name from table properties. Explorer does not call
-              Dataverse.
+              Maker table logical name {RELEASE_TICKET_LOGICAL_NAME}. Explorer
+              does not call Dataverse.
             </p>
             <ul className="mt-3 space-y-3">
               {payload.releaseTickets.map((row) => (
