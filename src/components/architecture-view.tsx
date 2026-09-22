@@ -49,8 +49,11 @@ export function ArchitectureView() {
         <Badge className="bg-emerald-700 text-white">
           Contoso sandbox · {CONTOSO_SANDBOX.status}
         </Badge>
+        <Badge variant="outline" className="border-emerald-600 text-emerald-800">
+          URL configured
+        </Badge>
         <Badge variant="outline" className="border-amber-500 text-amber-900">
-          {CONTOSO_SANDBOX.untilUnparked}
+          WhoAmI parked
         </Badge>
         <Badge variant="secondary">LLM impact</Badge>
         <Badge variant="outline">No Azure secrets</Badge>
@@ -58,22 +61,42 @@ export function ArchitectureView() {
 
       <p className="text-sm text-muted-foreground">
         {CONTOSO_SANDBOX.environment}. {CONTOSO_SANDBOX.demoCorpus}. Query, Graph,
-        and Records stay on this corpus until a live org is unparked.
+        and Records stay on this corpus. Env URL is labeled; WhoAmI stays parked.
       </p>
 
       <div className="grid gap-2 md:grid-cols-3">
         {LIVE_ORG_SWAP.map((item) => (
           <div
             key={item.id}
-            className="rounded-lg border border-dashed bg-zinc-50 px-3 py-2"
+            className={
+              item.parked
+                ? "rounded-lg border border-dashed bg-zinc-50 px-3 py-2"
+                : "rounded-lg border bg-card px-3 py-2"
+            }
           >
             <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-              Future live-org swap
+              {item.caption}
             </p>
             <p className="text-sm font-semibold">{item.label}</p>
-            <p className="font-mono text-[11px] text-muted-foreground">
-              {item.placeholder}
-            </p>
+            {item.id === "env-url" ? (
+              <a
+                href={item.value}
+                className="mt-1 block font-mono text-[11px] text-sky-800 break-all underline-offset-2 hover:underline"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {item.value}
+              </a>
+            ) : (
+              <p className="font-mono text-[11px] text-muted-foreground">
+                {item.value}
+              </p>
+            )}
+            {item.meta ? (
+              <p className="mt-1 font-mono text-[11px] text-muted-foreground break-all">
+                {item.meta}
+              </p>
+            ) : null}
             <p className="mt-1 text-[11px] text-muted-foreground">{item.note}</p>
           </div>
         ))}
@@ -87,7 +110,7 @@ export function ArchitectureView() {
           }
         >
           Pre-loading the Sources → Citations band and Release Watch strip. Live
-          Dataverse is not contacted.
+          Dataverse is not contacted. WhoAmI stays parked.
         </EmptyState>
       ) : (
         <>
@@ -155,8 +178,7 @@ function ArchDetail({
         actions={<EmptyAction onClick={onPick}>Pick Contoso sandbox</EmptyAction>}
       >
         Choose a node on the Sources → Retrieve → Agent loop → Citations band.
-        Dashed env URL, Entra app / client credentials, and WhoAmI stay future
-        swap labels only.
+        Env URL is labeled. Entra secrets and WhoAmI stay parked.
       </EmptyState>
     );
   }
@@ -164,7 +186,7 @@ function ArchDetail({
     <div className="rounded-xl border bg-card p-5">
       <p className="text-xs uppercase tracking-wide text-muted-foreground">
         {node.kind}
-        {node.dashed ? " · future swap" : ""}
+        {node.dashed ? " · parked" : ""}
         {node.badge ? ` · ${node.badge}` : ""}
       </p>
       <h3 className="font-heading text-lg font-semibold">{node.title}</h3>

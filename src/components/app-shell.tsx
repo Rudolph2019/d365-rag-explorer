@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 const TABS = [
   { href: "/architecture", id: "architecture", label: "Architecture" },
+  { href: "/dashboard", id: "dashboard", label: "Dashboard" },
   { href: "/", id: "pipeline", label: "Pipeline" },
   { href: "/compare", id: "compare", label: "Compare" },
   { href: "/impact", id: "impact", label: "Impact" },
@@ -37,9 +38,8 @@ export function AppShell({
               Dataverse RAG Explorer
             </h1>
             <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-              Contoso is in use. Architecture and Pipeline are siblings in the
-              same nav. Live Dataverse swap stays parked (env URL, Entra, WhoAmI
-              labels only).
+              Contoso is the data path. Power Platform env URL is labeled on
+              Dashboard. WhoAmI and Entra secrets stay parked.
             </p>
           </div>
           <OllamaStatus />

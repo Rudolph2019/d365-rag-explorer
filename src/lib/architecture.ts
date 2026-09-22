@@ -1,3 +1,5 @@
+import { LIVE_ORG } from "@/lib/live-org";
+
 export type ArchitectureKind =
   | "source"
   | "retrieve"
@@ -27,7 +29,7 @@ export const ARCHITECTURE_NODES: ArchitectureNode[] = [
     badge: "in use",
     summary: "Demo CRM corpus for Field Service and Customer Service.",
     detail:
-      "Sources start here. Contoso is the sandbox in use: local work orders, cases, accounts, and knowledge articles. There is no live Dataverse call. A future live-org swap would replace this node with a tenant env URL, Entra app / client credentials, and a WhoAmI health check — labels only until unparked.",
+      "Sources start here. Contoso is the sandbox in use: local work orders, cases, accounts, and knowledge articles. There is no live Dataverse call. The Power Platform env URL is labeled on Architecture and Dashboard; Entra secrets and WhoAmI stay parked.",
   },
   {
     id: "m365-source",
@@ -48,7 +50,7 @@ export const ARCHITECTURE_NODES: ArchitectureNode[] = [
     row: 1,
     summary: "Pull Contoso chunks plus optional live Roadmap rows.",
     detail:
-      "Happy-path retrieve is Contoso demo corpus (keyword over local records). Azure AI Search stays architecture copy. Live-org retrieve is parked with the env swap labels.",
+      "Happy-path retrieve is Contoso demo corpus (keyword over local records). Azure AI Search stays architecture copy. Live-org retrieve stays parked until WhoAmI has credentials — env URL is labeled only.",
   },
   {
     id: "planner",
@@ -93,14 +95,13 @@ export const ARCHITECTURE_NODES: ArchitectureNode[] = [
   {
     id: "swap-env",
     title: "env URL",
-    kind: "future",
+    kind: "source",
     col: 5,
     row: 1,
-    dashed: true,
-    badge: "future swap",
-    summary: "https://{org}.crm.dynamics.com — label only.",
+    badge: "URL configured",
+    summary: LIVE_ORG.makerHome.replace("https://", ""),
     detail:
-      "Future live-org swap. Not wired. Contoso sandbox remains the source in use.",
+      `Maker home for environment ${LIVE_ORG.environmentId}. This is a URL label only — Contoso remains the retrieve corpus. Open Dashboard for the live link.`,
   },
   {
     id: "swap-entra",
@@ -109,10 +110,10 @@ export const ARCHITECTURE_NODES: ArchitectureNode[] = [
     col: 5,
     row: 2,
     dashed: true,
-    badge: "future swap",
+    badge: "parked",
     summary: "No secrets stored in this explorer.",
     detail:
-      "Future live-org swap. Client credentials would belong to the unparked env, not this repo.",
+      "Do not paste client secrets. Entra credentials stay parked. Contoso remains the data path.",
   },
   {
     id: "swap-whoami",
@@ -121,10 +122,10 @@ export const ARCHITECTURE_NODES: ArchitectureNode[] = [
     col: 5,
     row: 3,
     dashed: true,
-    badge: "future swap",
-    summary: "Parked until the live org is unparked.",
+    badge: "parked",
+    summary: "Labeled future check until credentials exist.",
     detail:
-      "Future live-org swap. WhoAmI would confirm the swapped env before Query / Graph / Records leave Contoso.",
+      "WhoAmI is not called against the live org. When credentials exist, this check would confirm the env before Query / Graph / Records leave Contoso.",
   },
 ];
 

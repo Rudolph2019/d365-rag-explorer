@@ -1,8 +1,6 @@
 # Dataverse RAG Explorer
 
-Interactive architecture for a **Dataverse RAG** pipeline on the **Contoso sandbox** (in use until a live org is unparked): indexing vs query, Architecture + Release Watch, an in-repo **MCP** server, a live **M365 Roadmap** compare, and an **Impact** tab that rates public release items against a sample Dynamics solution inventory.
-
-Dataverse stays architecture-only (no tenant). Compare and Impact live-feed the public Microsoft 365 Roadmap API through a Next.js proxy.
+Contoso sandbox is the **data path** until live Dataverse is unparked. Architecture and Dashboard label the Power Platform environment URL. WhoAmI and Entra secrets stay parked.
 
 **Primary API:** [https://www.microsoft.com/releasecommunications/api/v2/m365](https://www.microsoft.com/releasecommunications/api/v2/m365)
 
@@ -23,7 +21,8 @@ npm run eval:golden
 
 Routes:
 
-- `/architecture` **Architecture** — same nav row as Pipeline (active tab is filled). Contoso RAG bands + Release Watch. Empty: pre-load, no band selected, no Release Watch step (each with a pick CTA)
+- `/architecture` **Architecture** — Contoso RAG bands + Release Watch. Env URL labeled from maker home; WhoAmI parked
+- `/dashboard` **Dashboard** — environment id, maker home link, URL configured / WhoAmI parked, Release Watch digest counts. Empty: `?state=empty`. Error: `?state=error`
 - `/query` **Query** · `/graph` **Graph** · `/records` **Records** — Contoso demo corpus. Empty: no query yet, no-match, parked live-org error, no graph node, no record filter match
 - `/eval` **Eval** — empty until Architecture hands off a digest (`/eval?digest=1` shows FLAG_PACK ids, Contoso ids, and handoff `source_url`)
 - `/` **Pipeline** — Indexing / Query canvas; empty detail until a node is picked
@@ -92,7 +91,8 @@ Cursor config (`~/.cursor/mcp.json` or project `.cursor/mcp.json`):
 | `src/data/flags-handoff-retrieval-eval.json` | Release Watch flag pack handoff (citation_key = source_url) |
 | `src/data/first-snapshot-2026-09-15.json` | Snapshot notes/dates used for digest copy (no invented claims) |
 | `src/lib/eval-handoff.ts` | Digest handoff + golden eval scoring |
-| `src/lib/contoso.ts` | Contoso sandbox, demo corpus, future swap labels |
+| `src/lib/live-org.ts` | Power Platform env id + maker URL labels (no secrets, no WhoAmI call) |
+| `src/lib/contoso.ts` | Contoso sandbox demo corpus |
 | `src/lib/m365.ts` | Live Roadmap client |
 | `src/lib/impact.ts` | TicketAnalysis + Severity |
 | `src/lib/inventory.ts` | Sample Dynamics inventory |
