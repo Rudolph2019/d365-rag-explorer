@@ -14,30 +14,11 @@ export const CONTOSO_SANDBOX = {
   org: "Contoso",
   environment: "Contoso Customer Service + Field Service sandbox",
   status: "in use" as const,
-  untilUnparked: "Contoso-only until unparked",
+  untilUnparked: "Contoso data path until live Dataverse is unparked",
   demoCorpus: "Local Contoso demo corpus — no tenant connector, no Azure secrets",
 };
 
-export const LIVE_ORG_SWAP = [
-  {
-    id: "env-url",
-    label: "env URL",
-    placeholder: "https://{org}.crm.dynamics.com",
-    note: "Future live-org swap label only. Not wired.",
-  },
-  {
-    id: "entra",
-    label: "Entra app / client credentials",
-    placeholder: "app id · client secret not stored",
-    note: "No Azure secrets in this explorer. Swap stays parked.",
-  },
-  {
-    id: "whoami",
-    label: "WhoAmI health check",
-    placeholder: "WhoAmI parked",
-    note: "Runs after the live org is unparked. Contoso sandbox does not call WhoAmI.",
-  },
-] as const;
+export { LIVE_ORG_LABELS as LIVE_ORG_SWAP } from "@/lib/live-org";
 
 export const CONTOSO_RECORDS: ContosoRecord[] = [
   {

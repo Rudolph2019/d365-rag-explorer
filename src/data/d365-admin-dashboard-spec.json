@@ -1,0 +1,33 @@
+{
+  "schema": "d365-rag-explorer.d365-dashboard.spec.v1",
+  "kind": "model-driven-interactive-dashboard",
+  "environmentId": "cc72ef22-bdee-e93a-a41f-db16e6d3fe0c",
+  "app": "A model-driven app that includes the Release Ticket table (cr458_releaseticket) in this environment — not Customer Service Hub / Case",
+  "publish": "spec-only — build the dashboard inside D365, not in this explorer",
+  "charts": [
+    {
+      "id": "open-admin-tickets",
+      "title": "Open admin tickets from Copilot Studio",
+      "entity": "cr458_releaseticket",
+      "filter": "statecode = Active AND owner = System Administrator AND origin is Release Watch Ticket Admin",
+      "visual": "column or tag chart of open Release Ticket counts by Maker Severity (644640000–644640003)"
+    },
+    {
+      "id": "release-watch-in-use",
+      "title": "Release Watch in use",
+      "source": "Digest rows with usage = in use",
+      "visual": "single-number or pie slice; exclude unused (ENT-17 and unused-product flags)"
+    },
+    {
+      "id": "release-watch-referenced",
+      "title": "Release Watch referenced",
+      "source": "Digest rows with usage = referenced",
+      "visual": "single-number or pie slice next to in use"
+    }
+  ],
+  "outOfScope": [
+    "Power BI datasets",
+    "dashboard XML in this repo",
+    "web dashboard in the explorer"
+  ]
+}

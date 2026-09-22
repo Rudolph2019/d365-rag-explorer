@@ -140,7 +140,7 @@ export const PIPELINE_STAGES: PipelineStage[] = [
     kind: "process",
     summary: "TicketAnalysis: Critical–Low, Feature vs Deprecated.",
     detail:
-      "Matches live Roadmap items (and a bounded Learn wave) to the solution inventory. Fills TicketAnalysis: title, description, url, area, severity, effective_date, change_type, is_deferable, system_impact, reasoning, should_create_ticket. Severity option-set ints 211460000–211460003 are kept as dataverseValue for a future D365 ticket. Ollama fills severity and reasoning when online; otherwise unique-name/area map + deprecation-phrase scan, default Medium. Past effective dates are not actionable.",
+      "Matches live Roadmap items (and a bounded Learn wave) to the solution inventory. Fills TicketAnalysis: title, description, url, area, severity, effective_date, change_type, is_deferable, system_impact, reasoning, should_create_ticket. Severity option-set ints 644640000–644640003 are Maker Severity values on Release Ticket. Ollama fills severity and reasoning when online; otherwise unique-name/area map + deprecation-phrase scan, default Medium. Past effective dates are not actionable.",
     llmJob: "impact",
     mcpTools: ["rate_roadmap_impact"],
   },
@@ -212,7 +212,7 @@ export const PIPELINE_STAGES: PipelineStage[] = [
     dashed: true,
     summary: "Future model-driven dashboard inside Dynamics 365.",
     detail:
-      "Dashed future consumer. Target is a personal or system dashboard in the Dynamics 365 app for makers and agents — cases, knowledge gaps, grounded-answer volume, impact counts — not a standalone web chart. Not built here.",
+      "Dashed future consumer. Spec-only: a model-driven / interactive dashboard inside this D365 environment (not this explorer). Charts: open cr458_releaseticket rows Copilot Studio created for System Administrator, plus Release Watch in-use and referenced counts. No Power BI dataset and no dashboard XML in this repo.",
   },
 ];
 

@@ -1,0 +1,166 @@
+{
+  "schema": "d365-rag-explorer.dataverse.table.v1",
+  "logicalName": "cr458_releaseticket",
+  "schemaName": "cr458_ReleaseTicket",
+  "displayName": "Release Ticket",
+  "displayCollectionName": "Release Tickets",
+  "description": "Copilot Studio TicketAnalysis rows for System Administrator. Maker table in env cc72ef22-bdee-e93a-a41f-db16e6d3fe0c. Prefer this custom table over Case (incident).",
+  "tableType": "Standard",
+  "publisherPrefix": "cr458_",
+  "ownershipType": "UserOwned",
+  "ownershipLabel": "User or team",
+  "primaryNameDisplayName": "Title",
+  "primaryNameAttribute": "cr458_title",
+  "primaryNameAttributeAlternates": ["cr458_name"],
+  "primaryNameNote": "Display name is Title. If Title is a custom/renamed primary column, logical name is likely cr458_title. Maker default primary is often cr458_name. Confirm from column properties.",
+  "primaryIdAttribute": "cr458_releaseticketid",
+  "entitySetName": "cr458_releasetickets",
+  "hasActivities": false,
+  "hasNotes": true,
+  "environmentId": "cc72ef22-bdee-e93a-a41f-db16e6d3fe0c",
+  "makerHome": "https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home",
+  "makerTables": "https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/entities?source=modeldrivenapp",
+  "createdViaWebApi": false,
+  "makerCreated": true,
+  "auth": "SKIPPED",
+  "authReason": "No DATAVERSE_*, POWERPLATFORM_*, or Entra client secrets in this explorer. The table exists in Maker. The explorer never calls Dataverse.",
+  "assignment": {
+    "role": "System Administrator",
+    "owner": "System Administrator",
+    "queue": null,
+    "note": "User or team ownership. Assign Owner to a user in the System Administrator role. Do not use a Case queue."
+  },
+  "preferOver": {
+    "logicalName": "incident",
+    "displayName": "Case",
+    "reason": "Release Watch tickets are not customer cases. A custom table avoids the Case queue and Customer Service Hub dependency."
+  },
+  "choiceSets": [
+    {
+      "logicalName": "cr458_severity",
+      "schemaName": "cr458_severity",
+      "displayName": "Severity",
+      "columnLogicalName": "cr458_severity",
+      "source": "Maker choice values. Do not use 211460000–211460003.",
+      "options": [
+        { "label": "Critical", "value": 644640000 },
+        { "label": "High", "value": 644640001 },
+        { "label": "Medium", "value": 644640002 },
+        { "label": "Low", "value": 644640003 }
+      ]
+    },
+    {
+      "logicalName": "cr458_changetype",
+      "schemaName": "cr458_ChangeType",
+      "displayName": "Change type",
+      "columnLogicalName": "cr458_change_type",
+      "source": "Maker choice values. Do not use 211460010–211460011.",
+      "options": [
+        { "label": "Feature", "value": 644640000 },
+        { "label": "Deprecated", "value": 644640001 }
+      ],
+      "note": "Feature 644640000 and Deprecated 644640001 overlap numerically with Critical/High. Bind by column (Severity vs Change type), not by int alone."
+    }
+  ],
+  "columns": [
+    {
+      "logicalName": "cr458_title",
+      "schemaName": "cr458_title",
+      "displayName": "Title",
+      "ticketAnalysis": "title",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 400,
+      "required": true,
+      "isPrimaryName": true,
+      "note": "Use this if Title is a custom primary column. Else bind TicketAnalysis.title to cr458_name."
+    },
+    {
+      "logicalName": "cr458_name",
+      "schemaName": "cr458_name",
+      "displayName": "Title",
+      "ticketAnalysis": "title",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 400,
+      "required": false,
+      "isPrimaryNameAlternate": true,
+      "note": "Maker default primary Name column. Confirm from column properties whether the primary is cr458_title or cr458_name."
+    },
+    {
+      "logicalName": "cr458_description",
+      "schemaName": "cr458_description",
+      "displayName": "Description",
+      "ticketAnalysis": "description",
+      "type": "Memo",
+      "format": "Text",
+      "maxLength": 2000,
+      "required": true
+    },
+    {
+      "logicalName": "cr458_url",
+      "schemaName": "cr458_url",
+      "displayName": "URL",
+      "ticketAnalysis": "url",
+      "type": "String",
+      "format": "Url",
+      "maxLength": 1000,
+      "required": true
+    },
+    {
+      "logicalName": "cr458_area",
+      "schemaName": "cr458_area",
+      "displayName": "Area",
+      "ticketAnalysis": "area",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 200,
+      "required": true
+    },
+    {
+      "logicalName": "cr458_severity",
+      "schemaName": "cr458_severity",
+      "displayName": "Severity",
+      "ticketAnalysis": "severity",
+      "type": "Picklist",
+      "choiceSet": "cr458_severity",
+      "required": true
+    },
+    {
+      "logicalName": "cr458_effective_date",
+      "schemaName": "cr458_effective_date",
+      "displayName": "Effective date",
+      "ticketAnalysis": "effective_date",
+      "type": "DateTime",
+      "format": "DateOnly",
+      "required": false
+    },
+    {
+      "logicalName": "cr458_change_type",
+      "schemaName": "cr458_change_type",
+      "displayName": "Change type",
+      "ticketAnalysis": "change_type",
+      "type": "Picklist",
+      "choiceSet": "cr458_changetype",
+      "required": true
+    },
+    {
+      "logicalName": "cr458_source_url",
+      "schemaName": "cr458_source_url",
+      "displayName": "Source URL",
+      "ticketAnalysis": "source_url",
+      "type": "String",
+      "format": "Url",
+      "maxLength": 1000,
+      "required": true
+    }
+  ],
+  "makerSteps": [
+    "Release Ticket already exists in Maker for environment cc72ef22-bdee-e93a-a41f-db16e6d3fe0c.",
+    "Table properties: display name Release Ticket, plural Release Tickets, schema name cr458_ReleaseTicket, logical name cr458_releaseticket, type Standard, ownership User or team.",
+    "Column prefix is cr458_. Primary display name is Title — bind TicketAnalysis.title to cr458_title if Title is custom, otherwise cr458_name. Confirm from column properties.",
+    "Severity (Choice, single): Critical 644640000, High 644640001, Medium 644640002, Low 644640003.",
+    "Change type (Choice, single): Feature 644640000, Deprecated 644640001. Bind by column.",
+    "In Copilot Studio, Create a new row on cr458_releaseticket. Assign Owner to System Administrator. Do not create Case (incident) records."
+  ]
+}

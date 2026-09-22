@@ -1,8 +1,6 @@
 # Dataverse RAG Explorer
 
-Interactive architecture for a **Dataverse RAG** pipeline on the **Contoso sandbox** (in use until a live org is unparked): indexing vs query, Architecture + Release Watch, an in-repo **MCP** server, a live **M365 Roadmap** compare, and an **Impact** tab that rates public release items against a sample Dynamics solution inventory.
-
-Dataverse stays architecture-only (no tenant). Compare and Impact live-feed the public Microsoft 365 Roadmap API through a Next.js proxy.
+Contoso sandbox is the **data path** until live Dataverse is unparked. Architecture parks the Power Platform env URL (`cc72ef22-bdee-e93a-a41f-db16e6d3fe0c` maker home). WhoAmI and Entra secrets stay parked. The operator dashboard lives **inside D365**, not in this explorer.
 
 **Primary API:** [https://www.microsoft.com/releasecommunications/api/v2/m365](https://www.microsoft.com/releasecommunications/api/v2/m365)
 
@@ -15,15 +13,72 @@ npm run dev
 
 Dev server: [http://127.0.0.1:43145](http://127.0.0.1:43145)
 
+Offline Retrieval Eval golden suite (citation handoff, no live org):
+
+```bash
+npm run eval:golden
+```
+
 Routes:
 
-- `/architecture` **Architecture** — same nav row as Pipeline (active tab is filled). Contoso RAG bands + Release Watch. Empty: pre-load, no band selected, no Release Watch step (each with a pick CTA)
-- `/query` **Query** · `/graph` **Graph** · `/records` **Records** — Contoso demo corpus. Empty: no query yet, no-match, parked live-org error, no graph node, no record filter match
-- `/eval` **Eval** — empty until Architecture hands off a digest
-- `/` **Pipeline** — Indexing / Query canvas; empty detail until a node is picked
-- `/compare` **Compare** — Dataverse vs M365, plus a live sample list from the v2 API
-- `/impact` **Impact** — `TicketAnalysis` rows (Critical–Low, Feature vs Deprecated) against the sample inventory; optional bounded Learn wave pages
-- `/ask` **Ask** — one orchestrator agent, max five MCP tool steps, visible tool-call trace. Invalid Roadmap OData (`orderby: rollout`, `filter: rollout`) is rewritten from stored lessons; a 400 auto-retries with `modified desc` and the loop stops after the first good retrieve.
+- `/architecture` **Architecture** — Contoso RAG bands + Release Watch. Env id and maker URL are parked labels. Digest → Retrieval Eval or Send to Copilot Studio
+- `/copilot-studio` **Copilot Studio handoff** — empty until `?digest=1`. Then sample `cr458_releaseticket` preview (no Dataverse call)
+- `/query` **Query** · `/graph` **Graph** · `/records` **Records** — Contoso demo corpus
+- `/eval` **Eval** — empty until Architecture hands off a digest (`/eval?digest=1`)
+- `/` **Pipeline** — Indexing / Query canvas; dashed D365 dashboard is spec-only (inside Dynamics, not here)
+- `/compare` **Compare** — Dataverse vs M365
+- `/impact` **Impact** — `TicketAnalysis` rows (Critical–Low, Feature vs Deprecated)
+- `/ask` **Ask** — orchestrator agent, max five MCP tool steps
+
+## Release Ticket table (`cr458_releaseticket`)
+
+**Release Ticket** exists in Maker for environment `cc72ef22-bdee-e93a-a41f-db16e6d3fe0c`. Schema: `src/data/cr458_releaseticket.schema.json`.
+
+Confirmed table properties: display name **Release Ticket**, plural **Release Tickets**, schema name **`cr458_ReleaseTicket`**, logical name **`cr458_releaseticket`**, type Standard, ownership User or team.
+
+The explorer has **no Dataverse / Entra secrets** (`createdViaWebApi: false`, **AUTH SKIPPED**). Do not invent credentials. This app never calls Dataverse.
+
+### Maker columns (prefix `cr458_`)
+
+Primary display name is **Title**. Bind TicketAnalysis `title` to **`cr458_title`** if Title is a custom primary column, or **`cr458_name`** if Maker left the default Name column. Confirm from column properties.
+
+| Display name | Logical name | Type | Notes |
+| --- | --- | --- | --- |
+| Title | `cr458_title` or `cr458_name` | Single line of text | Primary name. TicketAnalysis `title` |
+| Description | `cr458_description` | Multiple lines of text (2000) | TicketAnalysis `description` |
+| URL | `cr458_url` | Single line of text, URL | TicketAnalysis `url` |
+| Area | `cr458_area` | Single line of text | TicketAnalysis `area` |
+| Severity | `cr458_severity` | Choice, single | Critical **644640000**, High **644640001**, Medium **644640002**, Low **644640003** |
+| Effective date | `cr458_effective_date` | Date only | TicketAnalysis `effective_date` |
+| Change type | `cr458_change_type` | Choice, single | Feature **644640000**, Deprecated **644640001**. Bind by column — Feature and Critical share 644640000. |
+| Source URL | `cr458_source_url` | Single line of text, URL | TicketAnalysis `source_url` / citation |
+
+Assign **Owner** to a user in the **System Administrator** role. Do **not** use a Case queue.
+
+## Copilot Studio (admin publish)
+
+The explorer does **not** publish the agent. Spec: `src/data/copilot-studio-agent.json`. Bind **Create a new row** to **`cr458_releaseticket`**, not Case (`incident`).
+
+1. Open [maker home](https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home) for environment `cc72ef22-bdee-e93a-a41f-db16e6d3fe0c`.
+2. Copilot Studio → new agent **Release Watch Ticket Admin**.
+3. Add the three topics (ingest digest, emit TicketAnalysis, create admin tickets) and the Dataverse **Create a new row** tool bound to **Release Ticket** (`cr458_releaseticket`).
+4. Map TicketAnalysis `dataverseValue` to **Severity** (`cr458_severity`, **644640000–644640003**). Map `change_type` to **Change type** (`cr458_change_type`, **644640000** Feature, **644640001** Deprecated). Map Title to `cr458_title` or `cr458_name`. Assign **Owner** to **System Administrator**.
+5. Ingest only in use / referenced digest rows. Skip unused (ENT-17 and unused-product flags).
+6. Publish in that environment. This repo never stores client secrets and never calls Dataverse.
+
+Handoff payload shape: Architecture digest → **Send to Copilot Studio** → `/copilot-studio?digest=1`.
+
+## D365 dashboard (inside Dynamics, spec only)
+
+Do not build a web dashboard here. Spec: `src/data/d365-admin-dashboard-spec.json`.
+
+In a model-driven app that includes **Release Ticket** (`cr458_releaseticket`) in the same environment, add a **model-driven / interactive dashboard** with:
+
+- Open admin tickets created by the Copilot Studio agent (`cr458_releaseticket`, System Administrator owner)
+- Release Watch **in use** count
+- Release Watch **referenced** count
+
+No Power BI datasets and no dashboard XML in this repo.
 
 ## Ollama (optional)
 
@@ -70,7 +125,7 @@ Cursor config (`~/.cursor/mcp.json` or project `.cursor/mcp.json`):
     "d365-rag-explorer": {
       "command": "npx",
       "args": ["tsx", "mcp/server.ts"],
-      "cwd": "/absolute/path/to/this/repo"
+      "cwd": "/absolute/path/to/this-repo"
     }
   }
 }
@@ -82,18 +137,17 @@ Cursor config (`~/.cursor/mcp.json` or project `.cursor/mcp.json`):
 | --- | --- |
 | `src/lib/pipeline.ts` | Typed pipeline stages |
 | `src/lib/architecture.ts` | Contoso RAG architecture nodes |
-| `src/lib/release-watch.ts` | Release Watch strip + placeholder flags |
-| `src/lib/contoso.ts` | Contoso sandbox, demo corpus, future swap labels |
-| `src/lib/m365.ts` | Live Roadmap client |
-| `src/lib/impact.ts` | TicketAnalysis + Severity |
-| `src/lib/inventory.ts` | Sample Dynamics inventory |
-| `src/lib/orchestrator.ts` | Ask tool loop (self-heal + finalize) |
-| `src/lib/tool-memory.ts` | Persisted Ask lessons (`.data/tool-lessons.json`) |
-| `src/app/api/m365/route.ts` | Server proxy for the public API |
-| `src/app/api/impact/route.ts` | Impact rating |
-| `src/app/api/ask/route.ts` | Orchestrator |
-| `mcp/server.ts` | stdio MCP server |
+| `src/lib/release-watch.ts` | Release Watch strip + 32-flag FLAG_PACK |
+| `src/lib/copilot-studio.ts` | Digest → TicketAnalysis → sample `cr458_releaseticket` payload |
+| `src/data/cr458_releaseticket.schema.json` | Dataverse Release Ticket columns + Maker severity choice |
+| `src/data/copilot-studio-agent.json` | Copilot Studio topics/tools spec |
+| `src/data/d365-admin-dashboard-spec.json` | In-D365 dashboard spec |
+| `src/lib/eval-handoff.ts` | Digest handoff + golden eval scoring |
+| `src/lib/live-org.ts` | Parked env id + maker URL labels |
+| `src/lib/contoso.ts` | Contoso sandbox demo corpus |
+| `src/lib/impact.ts` | TicketAnalysis + Maker Severity `644640000`–`644640003` |
+| `mcp/server.ts` | stdio MCP server (explorer tools only — not Copilot Studio) |
 
 ## Out of scope
 
-No Entra app, no Dataverse credentials, no Copilot Studio / D365 Copilot implementation, no Power BI datasets. Those stay dashed future consumers on the canvas.
+No Entra app, no Dataverse credentials, no live Copilot Studio publish, no Power BI datasets, no explorer web dashboard. The D365 dashboard is built in the Dynamics app.
