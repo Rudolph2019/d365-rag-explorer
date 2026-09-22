@@ -1,6 +1,13 @@
 import { scoreGoldenEval } from "../src/lib/eval-handoff";
+import { scoreReleaseTicketWiring } from "../src/lib/copilot-studio";
 
-const checks = scoreGoldenEval();
+const checks = [
+  ...scoreGoldenEval(),
+  ...scoreReleaseTicketWiring().map((check) => ({
+    ...check,
+    id: `releaseticket-${check.id}`,
+  })),
+];
 for (const check of checks) {
   console.log(`${check.pass ? "PASS" : "FAIL"}  ${check.id} — ${check.detail}`);
 }

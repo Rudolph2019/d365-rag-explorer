@@ -5,19 +5,32 @@
   "makerHome": "https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home",
   "publish": "spec-only",
   "dataverse": "not-called-from-explorer",
+  "tableSchema": "src/data/cr_releaseticket.schema.json",
   "assignment": {
     "role": "System Administrator",
-    "queue": "System Administrator",
-    "entity": "incident",
-    "entityDisplayName": "Case"
+    "owner": "System Administrator",
+    "queue": null,
+    "entity": "cr_releaseticket",
+    "entityDisplayName": "Release Ticket"
   },
   "severityChoice": {
     "name": "TicketAnalysis severity",
+    "logicalName": "cr_ticketanalysisseverity",
+    "column": "cr_severity",
     "values": {
       "Critical": 211460000,
       "High": 211460001,
       "Medium": 211460002,
       "Low": 211460003
+    }
+  },
+  "changeTypeChoice": {
+    "name": "Change type",
+    "logicalName": "cr_changetype",
+    "column": "cr_change_type",
+    "values": {
+      "Feature": 211460010,
+      "Deprecated": 211460011
     }
   },
   "topics": [
@@ -34,10 +47,10 @@
       "instructions": "For each remaining flag emit a TicketAnalysis row: title, description, url, area, severity, dataverseValue (211460000–211460003), effective_date, change_type (Feature|Deprecated), is_deferable, system_impact, reasoning, should_create_ticket, matched_solutions. Do not invent deprecation claims beyond the source_url page."
     },
     {
-      "id": "create-admin-cases",
-      "name": "Create Case tickets for System Administrator",
+      "id": "create-admin-tickets",
+      "name": "Create Release Ticket rows for System Administrator",
       "trigger": "TicketAnalysis.should_create_ticket is true.",
-      "instructions": "Create incident (Case) records. Set title and description from TicketAnalysis. Set the TicketAnalysis severity choice to dataverseValue. Assign owner or queue to System Administrator. Do not create cases for unused rows."
+      "instructions": "Create cr_releaseticket (Release Ticket) records — not Case/incident. Map title, description, url, area, severity, effective_date, change_type, and source_url. Set cr_severity to TicketAnalysis.dataverseValue (211460000–211460003). Set cr_change_type to 211460010 (Feature) or 211460011 (Deprecated). Assign Owner to a user in the System Administrator role. Do not use a Case queue. Do not create rows for unused digest flags."
     }
   ],
   "tools": [
@@ -56,18 +69,23 @@
       "output": "TicketAnalysis"
     },
     {
-      "id": "create-incident",
-      "name": "Create incident",
+      "id": "create-releaseticket",
+      "name": "Create Release Ticket",
       "kind": "dataverse-connector",
-      "table": "incident",
-      "operation": "Create a new Case record",
+      "table": "cr_releaseticket",
+      "operation": "Create a new Release Ticket row",
       "bind": {
-        "title": "TicketAnalysis.title",
-        "description": "TicketAnalysis.description + source url",
-        "severity_choice": "TicketAnalysis.dataverseValue",
-        "owner_or_queue": "System Administrator"
+        "cr_title": "TicketAnalysis.title",
+        "cr_description": "TicketAnalysis.description",
+        "cr_url": "TicketAnalysis.url",
+        "cr_area": "TicketAnalysis.area",
+        "cr_severity": "TicketAnalysis.dataverseValue",
+        "cr_effective_date": "TicketAnalysis.effective_date",
+        "cr_change_type": "TicketAnalysis.change_type (Feature=211460010, Deprecated=211460011)",
+        "cr_source_url": "TicketAnalysis.url",
+        "ownerid": "System Administrator"
       },
-      "note": "Configured by the admin in Copilot Studio after publish. The explorer never calls Dataverse."
+      "note": "Configured by the admin in Copilot Studio after the Maker table exists. The explorer never calls Dataverse."
     }
   ]
 }

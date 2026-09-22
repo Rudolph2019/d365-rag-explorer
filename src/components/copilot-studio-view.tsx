@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import {
   COPILOT_STUDIO_AGENT,
   COPILOT_STUDIO_MAKER_HOME,
+  RELEASE_TICKET_LOGICAL_NAME,
   getCopilotStudioHandoff,
 } from "@/lib/copilot-studio";
 import { CONTOSO_SANDBOX } from "@/lib/contoso";
@@ -25,6 +26,9 @@ export function CopilotStudioView({ search = "" }: { search?: string }) {
           No tenant credentials
         </Badge>
         <Badge variant="outline">Dataverse not called</Badge>
+        <Badge variant="outline" className="font-mono">
+          {RELEASE_TICKET_LOGICAL_NAME}
+        </Badge>
       </div>
 
       <section className="rounded-xl border bg-card p-5">
@@ -36,9 +40,10 @@ export function CopilotStudioView({ search = "" }: { search?: string }) {
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Agent topics ingest the Release Watch digest (in use / referenced),
-          emit TicketAnalysis rows, and queue Case (incident) records for the
-          System Administrator. Publish happens in Copilot Studio in this
-          environment — this explorer never calls Dataverse.
+          emit TicketAnalysis rows, and create{" "}
+          <span className="font-mono text-foreground">cr_releaseticket</span>{" "}
+          rows owned by System Administrator. Publish happens in Copilot Studio
+          in this environment — this explorer never calls Dataverse.
         </p>
         <a
           href={COPILOT_STUDIO_MAKER_HOME}
@@ -73,8 +78,8 @@ export function CopilotStudioView({ search = "" }: { search?: string }) {
             </Link>
           }
         >
-          Copilot Studio will not create Case records from unused flags. No
-          Dataverse call was made.
+          Copilot Studio will not create Release Ticket rows from unused flags.
+          No Dataverse call was made.
         </EmptyState>
       ) : null}
 
@@ -89,44 +94,49 @@ export function CopilotStudioView({ search = "" }: { search?: string }) {
             }
           >
             {payload.message} Sample tickets below are the payload shape the
-            published agent would write to Case.
+            published agent would write to {RELEASE_TICKET_LOGICAL_NAME}.
           </EmptyState>
 
           <section className="rounded-xl border bg-card p-5">
             <h3 className="font-heading text-sm font-semibold">
-              Sample Case preview · System Administrator queue
+              Sample Release Ticket preview · System Administrator owner
             </h3>
             <p className="mt-1 text-xs text-muted-foreground">
               Severity ints {SEVERITY.Critical.dataverseValue}–
-              {SEVERITY.Low.dataverseValue}. {payload.incidents.length} preview
-              incidents from {payload.tickets.length} TicketAnalysis rows.
+              {SEVERITY.Low.dataverseValue}. {payload.releaseTickets.length}{" "}
+              preview rows from {payload.tickets.length} TicketAnalysis records.
+              Table create AUTH SKIPPED.
             </p>
             <ul className="mt-3 space-y-3">
-              {payload.incidents.map((incident) => (
+              {payload.releaseTickets.map((row) => (
                 <li
-                  key={incident.flagId}
+                  key={row.flagId}
                   className="rounded-lg border bg-muted/30 px-3 py-2"
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-mono text-[11px] text-muted-foreground">
-                      {incident.flagId}
+                      {row.flagId}
                     </span>
-                    <span className="text-sm font-semibold">{incident.title}</span>
+                    <span className="text-sm font-semibold">{row.title}</span>
                     <Badge variant="outline">
-                      {incident.severityName} · {incident.ticketAnalysisSeverity}
+                      {row.severityName} · {row.ticketAnalysisSeverity}
                     </Badge>
-                    <Badge variant="secondary">{incident.assignedToQueue}</Badge>
+                    <Badge variant="outline">
+                      {row.changeType} · {row.changeTypeValue}
+                    </Badge>
+                    <Badge variant="secondary">{row.assignedToOwner}</Badge>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {incident.logicalName} ({incident.displayName}) · preview only
+                    {row.logicalName} ({row.displayName}) · {row.area} · preview
+                    only
                   </p>
                   <a
-                    href={incident.sourceUrl}
+                    href={row.sourceUrl}
                     className="mt-1 inline-block text-xs text-sky-800 break-all underline-offset-2 hover:underline"
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {incident.sourceUrl}
+                    {row.sourceUrl}
                   </a>
                 </li>
               ))}
@@ -144,6 +154,9 @@ export function CopilotStudioView({ search = "" }: { search?: string }) {
                   unusedOmitted: payload.unusedOmitted,
                   dataverseCalled: payload.dataverseCalled,
                   credentials: payload.credentials,
+                  tableLogicalName: payload.tableLogicalName,
+                  createdViaWebApi: payload.createdViaWebApi,
+                  auth: payload.auth,
                   tickets: payload.tickets,
                 },
                 null,

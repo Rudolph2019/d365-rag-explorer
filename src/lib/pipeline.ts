@@ -212,7 +212,7 @@ export const PIPELINE_STAGES: PipelineStage[] = [
     dashed: true,
     summary: "Future model-driven dashboard inside Dynamics 365.",
     detail:
-      "Dashed future consumer. Spec-only: a model-driven / interactive dashboard inside this D365 environment (not this explorer). Charts: open Case records Copilot Studio created for System Administrator, plus Release Watch in-use and referenced counts. No Power BI dataset and no dashboard XML in this repo.",
+      "Dashed future consumer. Spec-only: a model-driven / interactive dashboard inside this D365 environment (not this explorer). Charts: open cr_releaseticket rows Copilot Studio created for System Administrator, plus Release Watch in-use and referenced counts. No Power BI dataset and no dashboard XML in this repo.",
   },
 ];
 

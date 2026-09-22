@@ -19,6 +19,11 @@ export const SEVERITY = {
   Low: { name: "Low" as const, dataverseValue: 211460003 },
 };
 
+export const CHANGE_TYPE = {
+  Feature: { name: "Feature" as const, dataverseValue: 211460010 },
+  Deprecated: { name: "Deprecated" as const, dataverseValue: 211460011 },
+};
+
 export const DEFAULT_SEVERITY = SEVERITY.Medium;
 
 export type TicketAnalysis = {

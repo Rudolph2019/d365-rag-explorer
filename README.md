@@ -22,7 +22,7 @@ npm run eval:golden
 Routes:
 
 - `/architecture` **Architecture** — Contoso RAG bands + Release Watch. Env id and maker URL are parked labels. Digest → Retrieval Eval or Send to Copilot Studio
-- `/copilot-studio` **Copilot Studio handoff** — empty until `?digest=1`. Then sample Case/incident preview (no Dataverse call)
+- `/copilot-studio` **Copilot Studio handoff** — empty until `?digest=1`. Then sample `cr_releaseticket` preview (no Dataverse call)
 - `/query` **Query** · `/graph` **Graph** · `/records` **Records** — Contoso demo corpus
 - `/eval` **Eval** — empty until Architecture hands off a digest (`/eval?digest=1`)
 - `/` **Pipeline** — Indexing / Query canvas; dashed D365 dashboard is spec-only (inside Dynamics, not here)
@@ -30,14 +30,42 @@ Routes:
 - `/impact` **Impact** — `TicketAnalysis` rows (Critical–Low, Feature vs Deprecated)
 - `/ask` **Ask** — orchestrator agent, max five MCP tool steps
 
+## Release Ticket table (`cr_releaseticket`)
+
+Logical name: **`cr_releaseticket`**. Schema: `src/data/cr_releaseticket.schema.json`.
+
+This VM had **no Dataverse / Entra secrets**, so the table was **not** created via Web API (`createdViaWebApi: false`, **AUTH SKIPPED**). Do not invent credentials. Create it in Maker for environment `cc72ef22-bdee-e93a-a41f-db16e6d3fe0c`.
+
+### Maker steps
+
+1. Open [maker home](https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home).
+2. Left nav → **Tables** → **New table**.
+3. Display name **Release Ticket**. Plural **Release Tickets**.
+4. Advanced: schema name `cr_ReleaseTicket` (logical name `cr_releaseticket`), publisher prefix `cr_`, ownership **User** (UserOwned). Primary column **Title** (`cr_title`).
+5. Add columns from the schema JSON:
+
+| Display name | Logical name | Type | Notes |
+| --- | --- | --- | --- |
+| Title | `cr_title` | Single line of text | Primary name. TicketAnalysis `title` |
+| Description | `cr_description` | Multiple lines of text (2000) | TicketAnalysis `description` |
+| URL | `cr_url` | Single line of text, URL | TicketAnalysis `url` |
+| Area | `cr_area` | Single line of text | TicketAnalysis `area` |
+| Severity | `cr_severity` | Choice **TicketAnalysis severity** | Critical **211460000**, High **211460001**, Medium **211460002**, Low **211460003** |
+| Effective date | `cr_effective_date` | Date only | TicketAnalysis `effective_date` |
+| Change type | `cr_change_type` | Choice **Change type** | Feature **211460010**, Deprecated **211460011** (not the severity ints) |
+| Source URL | `cr_source_url` | Single line of text, URL | TicketAnalysis `source_url` / citation |
+
+6. Save. Confirm the table logical name is **`cr_releaseticket`**.
+7. Assign **Owner** to a user in the **System Administrator** role. Do **not** use a Case queue.
+
 ## Copilot Studio (admin publish)
 
-The explorer does **not** publish the agent. Spec: `src/data/copilot-studio-agent.json`.
+The explorer does **not** publish the agent. Spec: `src/data/copilot-studio-agent.json`. Bind to **`cr_releaseticket`**, not Case (`incident`).
 
 1. Open [maker home](https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home) for environment `cc72ef22-bdee-e93a-a41f-db16e6d3fe0c`.
 2. Copilot Studio → new agent **Release Watch Ticket Admin**.
-3. Add the three topics (ingest digest, emit TicketAnalysis, create admin cases) and the Dataverse **Create incident** tool bound to **Case**.
-4. Map TicketAnalysis `dataverseValue` to the severity choice **211460000–211460003**. Assign owner/queue to **System Administrator**.
+3. Add the three topics (ingest digest, emit TicketAnalysis, create admin tickets) and the Dataverse **Create a new row** tool bound to **Release Ticket** (`cr_releaseticket`).
+4. Map TicketAnalysis `dataverseValue` to `cr_severity` (**211460000–211460003**). Map `change_type` to `cr_change_type` (**211460010** Feature, **211460011** Deprecated). Assign **Owner** to **System Administrator**.
 5. Ingest only in use / referenced digest rows. Skip unused (ENT-17 and unused-product flags).
 6. Publish in that environment. This repo never stores client secrets and never calls Dataverse.
 
@@ -47,9 +75,9 @@ Handoff payload shape: Architecture digest → **Send to Copilot Studio** → `/
 
 Do not build a web dashboard here. Spec: `src/data/d365-admin-dashboard-spec.json`.
 
-In Customer Service Hub (or the model-driven app that owns Case) in the same environment, add a **model-driven / interactive dashboard** with:
+In a model-driven app that includes **Release Ticket** (`cr_releaseticket`) in the same environment, add a **model-driven / interactive dashboard** with:
 
-- Open admin cases created by the Copilot Studio agent (Case / `incident`, System Administrator queue)
+- Open admin tickets created by the Copilot Studio agent (`cr_releaseticket`, System Administrator owner)
 - Release Watch **in use** count
 - Release Watch **referenced** count
 
@@ -113,7 +141,8 @@ Cursor config (`~/.cursor/mcp.json` or project `.cursor/mcp.json`):
 | `src/lib/pipeline.ts` | Typed pipeline stages |
 | `src/lib/architecture.ts` | Contoso RAG architecture nodes |
 | `src/lib/release-watch.ts` | Release Watch strip + 32-flag FLAG_PACK |
-| `src/lib/copilot-studio.ts` | Digest → TicketAnalysis → sample Case payload |
+| `src/lib/copilot-studio.ts` | Digest → TicketAnalysis → sample `cr_releaseticket` payload |
+| `src/data/cr_releaseticket.schema.json` | Dataverse Release Ticket columns + severity choice |
 | `src/data/copilot-studio-agent.json` | Copilot Studio topics/tools spec |
 | `src/data/d365-admin-dashboard-spec.json` | In-D365 dashboard spec |
 | `src/lib/eval-handoff.ts` | Digest handoff + golden eval scoring |

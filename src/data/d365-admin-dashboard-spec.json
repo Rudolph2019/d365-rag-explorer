@@ -2,15 +2,15 @@
   "schema": "d365-rag-explorer.d365-dashboard.spec.v1",
   "kind": "model-driven-interactive-dashboard",
   "environmentId": "cc72ef22-bdee-e93a-a41f-db16e6d3fe0c",
-  "app": "Customer Service Hub (or the model-driven app that owns Case) in this environment",
+  "app": "A model-driven app that includes the Release Ticket table (cr_releaseticket) in this environment — not Customer Service Hub / Case",
   "publish": "spec-only — build the dashboard inside D365, not in this explorer",
   "charts": [
     {
-      "id": "open-admin-cases",
-      "title": "Open admin cases from Copilot Studio",
-      "entity": "incident",
-      "filter": "statecode = Active AND owner or queue = System Administrator AND origin is Release Watch Ticket Admin",
-      "visual": "column or tag chart of open Case counts by TicketAnalysis severity (211460000–211460003)"
+      "id": "open-admin-tickets",
+      "title": "Open admin tickets from Copilot Studio",
+      "entity": "cr_releaseticket",
+      "filter": "statecode = Active AND owner = System Administrator AND origin is Release Watch Ticket Admin",
+      "visual": "column or tag chart of open Release Ticket counts by TicketAnalysis severity (211460000–211460003)"
     },
     {
       "id": "release-watch-in-use",

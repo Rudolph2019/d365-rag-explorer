@@ -1,0 +1,153 @@
+{
+  "schema": "d365-rag-explorer.dataverse.table.v1",
+  "logicalName": "cr_releaseticket",
+  "schemaName": "cr_ReleaseTicket",
+  "displayName": "Release Ticket",
+  "displayCollectionName": "Release Tickets",
+  "description": "Copilot Studio TicketAnalysis rows for System Administrator. Prefer this custom table over Case (incident).",
+  "publisherPrefix": "cr_",
+  "ownershipType": "UserOwned",
+  "primaryNameAttribute": "cr_title",
+  "primaryIdAttribute": "cr_releaseticketid",
+  "entitySetName": "cr_releasetickets",
+  "hasActivities": false,
+  "hasNotes": true,
+  "environmentId": "cc72ef22-bdee-e93a-a41f-db16e6d3fe0c",
+  "makerHome": "https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home",
+  "makerTables": "https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/entities?source=modeldrivenapp",
+  "createdViaWebApi": false,
+  "auth": "SKIPPED",
+  "authReason": "No DATAVERSE_*, POWERPLATFORM_*, or Entra client secrets on the builder VM. Credentials were not invented. Create the table in Maker.",
+  "assignment": {
+    "role": "System Administrator",
+    "owner": "System Administrator",
+    "queue": null,
+    "note": "UserOwned. Assign Owner to a user in the System Administrator role. Do not use a Case queue."
+  },
+  "preferOver": {
+    "logicalName": "incident",
+    "displayName": "Case",
+    "reason": "Release Watch tickets are not customer cases. A custom table avoids the Case queue and Customer Service Hub dependency."
+  },
+  "choiceSets": [
+    {
+      "logicalName": "cr_ticketanalysisseverity",
+      "schemaName": "cr_TicketAnalysisSeverity",
+      "displayName": "TicketAnalysis severity",
+      "columnLogicalName": "cr_severity",
+      "options": [
+        { "label": "Critical", "value": 211460000 },
+        { "label": "High", "value": 211460001 },
+        { "label": "Medium", "value": 211460002 },
+        { "label": "Low", "value": 211460003 }
+      ]
+    },
+    {
+      "logicalName": "cr_changetype",
+      "schemaName": "cr_ChangeType",
+      "displayName": "Change type",
+      "columnLogicalName": "cr_change_type",
+      "options": [
+        { "label": "Feature", "value": 211460010 },
+        { "label": "Deprecated", "value": 211460011 }
+      ],
+      "note": "Values skip 211460000–211460003 so they never collide with TicketAnalysis severity."
+    }
+  ],
+  "columns": [
+    {
+      "logicalName": "cr_title",
+      "schemaName": "cr_title",
+      "displayName": "Title",
+      "ticketAnalysis": "title",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 400,
+      "required": true,
+      "isPrimaryName": true
+    },
+    {
+      "logicalName": "cr_description",
+      "schemaName": "cr_description",
+      "displayName": "Description",
+      "ticketAnalysis": "description",
+      "type": "Memo",
+      "format": "Text",
+      "maxLength": 2000,
+      "required": true
+    },
+    {
+      "logicalName": "cr_url",
+      "schemaName": "cr_url",
+      "displayName": "URL",
+      "ticketAnalysis": "url",
+      "type": "String",
+      "format": "Url",
+      "maxLength": 1000,
+      "required": true
+    },
+    {
+      "logicalName": "cr_area",
+      "schemaName": "cr_area",
+      "displayName": "Area",
+      "ticketAnalysis": "area",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 200,
+      "required": true
+    },
+    {
+      "logicalName": "cr_severity",
+      "schemaName": "cr_severity",
+      "displayName": "Severity",
+      "ticketAnalysis": "severity",
+      "type": "Picklist",
+      "choiceSet": "cr_ticketanalysisseverity",
+      "required": true
+    },
+    {
+      "logicalName": "cr_effective_date",
+      "schemaName": "cr_effective_date",
+      "displayName": "Effective date",
+      "ticketAnalysis": "effective_date",
+      "type": "DateTime",
+      "format": "DateOnly",
+      "required": false
+    },
+    {
+      "logicalName": "cr_change_type",
+      "schemaName": "cr_change_type",
+      "displayName": "Change type",
+      "ticketAnalysis": "change_type",
+      "type": "Picklist",
+      "choiceSet": "cr_changetype",
+      "required": true
+    },
+    {
+      "logicalName": "cr_source_url",
+      "schemaName": "cr_source_url",
+      "displayName": "Source URL",
+      "ticketAnalysis": "source_url",
+      "type": "String",
+      "format": "Url",
+      "maxLength": 1000,
+      "required": true
+    }
+  ],
+  "makerSteps": [
+    "Open https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home",
+    "Left nav → Tables → New table",
+    "Display name: Release Ticket. Plural: Release Tickets.",
+    "Advanced options: schema name cr_ReleaseTicket (logical name cr_releaseticket), publisher prefix cr_, ownership User (UserOwned).",
+    "Primary column: Title, schema name cr_title.",
+    "Add Description (cr_description, Multiple lines of text, 2000).",
+    "Add URL (cr_url, Single line of text, URL format, 1000).",
+    "Add Area (cr_area, Single line of text, 200).",
+    "Add Severity (cr_severity, Choice). New choice TicketAnalysis severity with Critical 211460000, High 211460001, Medium 211460002, Low 211460003.",
+    "Add Effective date (cr_effective_date, Date only).",
+    "Add Change type (cr_change_type, Choice). New choice Change type with Feature 211460010, Deprecated 211460011.",
+    "Add Source URL (cr_source_url, Single line of text, URL format, 1000).",
+    "Save. Confirm the table logical name is cr_releaseticket.",
+    "In Copilot Studio, bind Create a new row to cr_releaseticket. Assign Owner to System Administrator. Do not create Case (incident) records."
+  ]
+}

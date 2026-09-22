@@ -1,7 +1,9 @@
 import agentSpec from "@/data/copilot-studio-agent.json";
+import releaseTicketSchema from "@/data/cr_releaseticket.schema.json";
 import { isDigestHandoff } from "@/lib/eval-handoff";
 import {
   applyTicketGates,
+  CHANGE_TYPE,
   heuristicSeverity,
   isDeprecatedLanguage,
   SEVERITY,
@@ -19,19 +21,28 @@ export const COPILOT_STUDIO_DIGEST_QUERY = "digest=1";
 export const COPILOT_STUDIO_HANDOFF_HREF = `/copilot-studio?${COPILOT_STUDIO_DIGEST_QUERY}`;
 export const COPILOT_STUDIO_MAKER_HOME = LIVE_ORG.makerHome;
 
+export const RELEASE_TICKET_SCHEMA = releaseTicketSchema;
+export const RELEASE_TICKET_LOGICAL_NAME = releaseTicketSchema.logicalName;
+export const RELEASE_TICKET_DISPLAY_NAME = releaseTicketSchema.displayName;
+
 export const COPILOT_STUDIO_AGENT = agentSpec;
 
-export type SampleIncident = {
-  logicalName: "incident";
-  displayName: "Case";
+export type SampleReleaseTicket = {
+  logicalName: "cr_releaseticket";
+  displayName: "Release Ticket";
   flagId: string;
   title: string;
   description: string;
+  url: string;
+  area: string;
   severityName: TicketAnalysis["severity"];
   ticketAnalysisSeverity: number;
-  assignedToRole: "System Administrator";
-  assignedToQueue: "System Administrator";
+  changeType: TicketAnalysis["change_type"];
+  changeTypeValue: number;
+  effectiveDate: string;
   sourceUrl: string;
+  assignedToRole: "System Administrator";
+  assignedToOwner: "System Administrator";
   preview: true;
 };
 
@@ -43,9 +54,12 @@ export type CopilotStudioHandoff = {
   unusedOmitted: true;
   dataverseCalled: false;
   credentials: "none";
+  tableLogicalName: "cr_releaseticket";
+  createdViaWebApi: false;
+  auth: "SKIPPED";
   message: string;
   tickets: TicketAnalysis[];
-  incidents: SampleIncident[];
+  releaseTickets: SampleReleaseTicket[];
 };
 
 function changeTypeForKind(kind: FlagKind | undefined, text: string) {
@@ -101,21 +115,26 @@ export function digestRowToTicket(row: ImpactCompareRow): TicketAnalysis {
   return ticket;
 }
 
-export function ticketToSampleIncident(
+export function ticketToSampleReleaseTicket(
   ticket: TicketAnalysis,
   flagId: string,
-): SampleIncident {
+): SampleReleaseTicket {
   return {
-    logicalName: "incident",
-    displayName: "Case",
+    logicalName: "cr_releaseticket",
+    displayName: "Release Ticket",
     flagId,
     title: ticket.title,
-    description: `${ticket.description}\n\nSource: ${ticket.url}`,
+    description: ticket.description,
+    url: ticket.url,
+    area: ticket.area,
     severityName: ticket.severity,
     ticketAnalysisSeverity: ticket.dataverseValue,
-    assignedToRole: "System Administrator",
-    assignedToQueue: "System Administrator",
+    changeType: ticket.change_type,
+    changeTypeValue: CHANGE_TYPE[ticket.change_type].dataverseValue,
+    effectiveDate: ticket.effective_date,
     sourceUrl: ticket.url,
+    assignedToRole: "System Administrator",
+    assignedToOwner: "System Administrator",
     preview: true,
   };
 }
@@ -127,8 +146,8 @@ export function buildCopilotStudioHandoff(
     (row) => row.usage === "in use" || row.usage === "referenced",
   );
   const tickets = grounded.map(digestRowToTicket);
-  const incidents = tickets.map((ticket, index) =>
-    ticketToSampleIncident(ticket, grounded[index]?.flagId ?? ticket.title),
+  const releaseTickets = tickets.map((ticket, index) =>
+    ticketToSampleReleaseTicket(ticket, grounded[index]?.flagId ?? ticket.title),
   );
   return {
     schema: "d365-rag-explorer.copilot-studio.digest.v1",
@@ -138,10 +157,13 @@ export function buildCopilotStudioHandoff(
     unusedOmitted: true,
     dataverseCalled: false,
     credentials: "none",
+    tableLogicalName: "cr_releaseticket",
+    createdViaWebApi: false,
+    auth: "SKIPPED",
     message:
-      "No tenant credentials in this explorer. Sample Case/incident preview only — Dataverse is not called.",
+      "No tenant credentials in this explorer. Sample cr_releaseticket preview only — Dataverse is not called. AUTH SKIPPED.",
     tickets,
-    incidents,
+    releaseTickets,
   };
 }
 
@@ -153,4 +175,75 @@ export function getCopilotStudioHandoff(search: string): {
     return { handedOff: false, payload: null };
   }
   return { handedOff: true, payload: buildCopilotStudioHandoff() };
+}
+
+export type ReleaseTicketWiringCheck = {
+  id: string;
+  pass: boolean;
+  detail: string;
+};
+
+export function scoreReleaseTicketWiring(): ReleaseTicketWiringCheck[] {
+  const logical = releaseTicketSchema.logicalName;
+  const agentTable = agentSpec.assignment.entity;
+  const tool = agentSpec.tools.find((item) => item.id === "create-releaseticket");
+  const severityValues = releaseTicketSchema.choiceSets
+    .find((set) => set.logicalName === "cr_ticketanalysisseverity")
+    ?.options.map((option) => option.value);
+  const changeValues = releaseTicketSchema.choiceSets
+    .find((set) => set.logicalName === "cr_changetype")
+    ?.options.map((option) => option.value);
+  const requiredColumns = [
+    "cr_title",
+    "cr_description",
+    "cr_url",
+    "cr_area",
+    "cr_severity",
+    "cr_effective_date",
+    "cr_change_type",
+    "cr_source_url",
+  ];
+  const columnNames = releaseTicketSchema.columns.map((column) => column.logicalName);
+
+  return [
+    {
+      id: "logical-name",
+      pass: logical === "cr_releaseticket" && agentTable === "cr_releaseticket",
+      detail: `schema ${logical}; agent ${agentTable}`,
+    },
+    {
+      id: "not-incident",
+      pass: agentTable !== "incident" && tool?.table === "cr_releaseticket",
+      detail: `create tool table ${tool?.table ?? "missing"}`,
+    },
+    {
+      id: "severity-choice",
+      pass:
+        JSON.stringify(severityValues) ===
+        JSON.stringify([211460000, 211460001, 211460002, 211460003]),
+      detail: `severity values ${severityValues?.join(",") ?? "missing"}`,
+    },
+    {
+      id: "change-type-choice",
+      pass: JSON.stringify(changeValues) === JSON.stringify([211460010, 211460011]),
+      detail: `change type values ${changeValues?.join(",") ?? "missing"}`,
+    },
+    {
+      id: "columns",
+      pass: requiredColumns.every((name) => columnNames.includes(name)),
+      detail: `columns ${columnNames.join(",")}`,
+    },
+    {
+      id: "auth-skipped",
+      pass:
+        releaseTicketSchema.createdViaWebApi === false &&
+        releaseTicketSchema.auth === "SKIPPED",
+      detail: `createdViaWebApi ${String(releaseTicketSchema.createdViaWebApi)}; auth ${releaseTicketSchema.auth}`,
+    },
+    {
+      id: "no-case-queue",
+      pass: releaseTicketSchema.assignment.queue === null && agentSpec.assignment.queue === null,
+      detail: "Owner is System Administrator; Case queue is unused",
+    },
+  ];
 }
