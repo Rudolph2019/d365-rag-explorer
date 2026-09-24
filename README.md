@@ -19,6 +19,7 @@ Routes:
 
 - `/architecture` **Architecture** — same nav row as Pipeline (active tab is filled). Contoso RAG bands + Release Watch. Empty: pre-load, no band selected, no Release Watch step (each with a pick CTA)
 - `/query` **Query** · `/graph` **Graph** · `/records` **Records** — Contoso demo corpus. Empty: no query yet, no-match, parked live-org error, no graph node, no record filter match
+- `/knowledge/galxity` **Knowledge** — Galxity AI topic (Enterprise Horizon, constellation, quantum fabric, governance). `/knowledge` redirects here.
 - `/eval` **Eval** — empty until Architecture hands off a digest
 - `/` **Pipeline** — Indexing / Query canvas; empty detail until a node is picked
 - `/compare` **Compare** — Dataverse vs M365, plus a live sample list from the v2 API
@@ -84,6 +85,7 @@ Cursor config (`~/.cursor/mcp.json` or project `.cursor/mcp.json`):
 | `src/lib/architecture.ts` | Contoso RAG architecture nodes |
 | `src/lib/release-watch.ts` | Release Watch strip + placeholder flags |
 | `src/lib/contoso.ts` | Contoso sandbox, demo corpus, future swap labels |
+| `src/lib/galxity.ts` | Galxity AI knowledge topic articles |
 | `src/lib/m365.ts` | Live Roadmap client |
 | `src/lib/impact.ts` | TicketAnalysis + Severity |
 | `src/lib/inventory.ts` | Sample Dynamics inventory |

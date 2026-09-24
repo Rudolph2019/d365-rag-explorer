@@ -249,7 +249,11 @@ export function RecordsView() {
         <h2 className="font-heading text-base font-semibold">Records</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Contoso demo corpus. LLM impact compare reads in use / referenced
-          rows only.
+          rows only. For the Galxity AI topic, open{" "}
+          <Link href="/knowledge/galxity" className="underline underline-offset-2">
+            Knowledge / Galxity
+          </Link>
+          .
         </p>
         <input
           value={filter}
