@@ -1,0 +1,84 @@
+{
+  "schema": "d365-rag-explorer.copilot-studio.knowledge.v1",
+  "name": "Galxity Knowledge",
+  "product": "Galxity AI",
+  "environmentId": "cc72ef22-bdee-e93a-a41f-db16e6d3fe0c",
+  "makerHome": "https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home",
+  "publish": "spec-only",
+  "dataverse": "not-called-from-explorer",
+  "tableSchema": "src/data/cr458_galxityknowledge.schema.json",
+  "purpose": "Ground Copilot Studio and model-driven Power Apps answers on Galxity AI operating knowledge (Enterprise Horizon, constellation, quantum fabric, Q-Cyber, ledger integrity, agent governance). Replaces Contoso sample wording in agent instructions for knowledge topics.",
+  "knowledgeSources": [
+    {
+      "id": "upload-markdown",
+      "kind": "copilot-studio-file-upload",
+      "label": "Upload Galxity markdown pack",
+      "how": "In Copilot Studio → Knowledge → Add knowledge → Files. Upload the .md files from GET /api/galxity/export?format=zip (or each article from format=md&id=KA-GX-01).",
+      "export": "/api/galxity/export?format=zip"
+    },
+    {
+      "id": "dataverse-custom",
+      "kind": "dataverse-table",
+      "label": "Dataverse Galxity Knowledge table",
+      "table": "cr458_galxityknowledge",
+      "how": "Create table from schema, import CSV from GET /api/galxity/export?format=csv, add table to a model-driven app, then Copilot Studio → Knowledge → Dataverse → Galxity Knowledge.",
+      "export": "/api/galxity/export?format=csv"
+    },
+    {
+      "id": "dataverse-knowledgearticle",
+      "kind": "dataverse-knowledgearticle",
+      "label": "Standard Knowledge Article (optional)",
+      "table": "knowledgearticle",
+      "how": "If licensed, create/publish knowledgearticle rows using titles and body from the JSON export. Point Copilot Studio Knowledge at Knowledge Article."
+    }
+  ],
+  "agentInstructions": {
+    "system": "You are the Galxity AI assistant for this Power Platform environment. Ground answers in Galxity Knowledge (Enterprise Horizon, Constellation Command, Quantum Network Fabric, Q-Cyber Defense, Blockchain Integrity, Data & Agent Governance). Cite article ids (KA-GX-01 … KA-GX-06) when you use them. Do not invent Contoso Coffee / Contoso Field Service facts. For Release Ticket work, use the Release Ticket Admin tools on cr458_releaseticket; for product/operating questions, use Galxity Knowledge.",
+    "doNotSay": [
+      "Contoso Coffee",
+      "Contoso sandbox demo corpus as the live customer",
+      "Azure AI Search is required for this knowledge topic"
+    ]
+  },
+  "topics": [
+    {
+      "id": "ask-galxity",
+      "name": "Ask Galxity Knowledge",
+      "trigger": "User asks about Galxity, Enterprise Horizon, constellation, quantum network, Q-Cyber, blockchain integrity, or agent governance.",
+      "instructions": "Search Galxity Knowledge first. Answer with short grounded paragraphs and cite KA-GX-* ids. If knowledge is empty, tell the admin to import the CSV or upload the markdown pack — do not invent product claims."
+    },
+    {
+      "id": "handoff-release-ticket",
+      "name": "Handoff to Release Ticket Admin",
+      "trigger": "User wants a Release Ticket or roadmap impact row created.",
+      "instructions": "Do not write Galxity Knowledge rows for tickets. Use Create Release Ticket on cr458_releaseticket (System Administrator owner). Keep Galxity Knowledge read-only for grounding."
+    }
+  ],
+  "tools": [
+    {
+      "id": "search-galxity-knowledge",
+      "name": "Search Galxity Knowledge",
+      "kind": "dataverse-connector",
+      "table": "cr458_galxityknowledge",
+      "operation": "List rows / Search",
+      "note": "Prefer Copilot Studio Knowledge grounding over a custom tool when the table or files are already added as Knowledge."
+    },
+    {
+      "id": "create-releaseticket",
+      "name": "Create Release Ticket",
+      "kind": "dataverse-connector",
+      "table": "cr458_releaseticket",
+      "operation": "Create a new Release Ticket row",
+      "note": "Existing admin tool. Unchanged by Galxity Knowledge."
+    }
+  ],
+  "makerChecklist": [
+    "Open maker home for environment cc72ef22-bdee-e93a-a41f-db16e6d3fe0c",
+    "Tables → New table → Galxity Knowledge (cr458_GalxityKnowledge) using columns from the schema",
+    "Import CSV from /api/galxity/export?format=csv (or paste six rows)",
+    "Create model-driven app Galxity Knowledge with Active Galxity Knowledge view",
+    "Copilot Studio → your agent → Knowledge → add Dataverse Galxity Knowledge and/or upload markdown pack",
+    "Paste agentInstructions.system into the agent instructions; remove Contoso Coffee sample wording",
+    "Publish → Test in Preview: ask What is Enterprise Horizon? and expect KA-GX-01"
+  ]
+}

@@ -19,8 +19,23 @@ Routes:
 
 - `/architecture` **Architecture** — same nav row as Pipeline (active tab is filled). Contoso RAG bands + Release Watch. Empty: pre-load, no band selected, no Release Watch step (each with a pick CTA)
 - `/query` **Query** · `/graph` **Graph** · `/records` **Records** — Contoso demo corpus. Empty: no query yet, no-match, parked live-org error, no graph node, no record filter match
-- `/knowledge/galxity` **Knowledge** — Galxity AI topic (Enterprise Horizon, constellation, quantum fabric, governance). `/knowledge` redirects here.
+- `/knowledge/galxity` **Knowledge** — Galxity AI topic (Enterprise Horizon, constellation, quantum fabric, governance). `/knowledge` redirects here. Includes **Power Apps handoff** for env `cc72ef22-bdee-e93a-a41f-db16e6d3fe0c` (CSV / markdown pack / Copilot Studio instructions). Explorer never calls Dataverse.
 - `/eval` **Eval** — empty until Architecture hands off a digest
+
+## Galxity Knowledge → Power Apps
+
+Same environment as Release Ticket (`cc72ef22-bdee-e93a-a41f-db16e6d3fe0c` / `org0da602b3`).
+
+1. Open [maker home](https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home).
+2. Create table **Galxity Knowledge** (`cr458_GalxityKnowledge`) from `src/data/cr458_galxityknowledge.schema.json`.
+3. Import CSV from `GET /api/galxity/export?format=csv` (or the Download CSV button on `/knowledge/galxity`).
+4. Optional model-driven app with **Active Galxity Knowledge** view.
+5. Copilot Studio → Knowledge → add the Dataverse table and/or upload the markdown zip (`?format=zip`).
+6. Paste agent instructions from `src/data/galxity-copilot-studio-knowledge.json` (also shown on the Knowledge page). Remove Contoso Coffee sample wording.
+7. Preview: ask *What is Enterprise Horizon?* — expect a grounded answer citing `KA-GX-01`.
+
+Release Ticket (`cr458_releaseticket`) tools stay for ticket create. Galxity Knowledge is read-only grounding.
+
 - `/` **Pipeline** — Indexing / Query canvas; empty detail until a node is picked
 - `/compare` **Compare** — Dataverse vs M365, plus a live sample list from the v2 API
 - `/impact` **Impact** — `TicketAnalysis` rows (Critical–Low, Feature vs Deprecated) against the sample inventory; optional bounded Learn wave pages
@@ -86,6 +101,11 @@ Cursor config (`~/.cursor/mcp.json` or project `.cursor/mcp.json`):
 | `src/lib/release-watch.ts` | Release Watch strip + placeholder flags |
 | `src/lib/contoso.ts` | Contoso sandbox, demo corpus, future swap labels |
 | `src/lib/galxity.ts` | Galxity AI knowledge topic articles |
+| `src/lib/galxity-powerapps.ts` | Power Apps / Copilot Studio handoff + CSV/MD export helpers |
+| `src/lib/live-org.ts` | Parked Maker env id + maker home URL |
+| `src/data/cr458_galxityknowledge.schema.json` | Dataverse **Galxity Knowledge** table (`cr458_`) |
+| `src/data/galxity-copilot-studio-knowledge.json` | Copilot Studio Knowledge setup + agent instructions |
+| `src/app/api/galxity/export/route.ts` | `?format=csv\|json\|md\|zip` downloads |
 | `src/lib/m365.ts` | Live Roadmap client |
 | `src/lib/impact.ts` | TicketAnalysis + Severity |
 | `src/lib/inventory.ts` | Sample Dynamics inventory |

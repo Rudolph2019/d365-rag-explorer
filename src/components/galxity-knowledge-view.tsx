@@ -12,6 +12,12 @@ import {
   searchGalxity,
   type GalxityArticle,
 } from "@/lib/galxity";
+import {
+  GALXITY_COPILOT_STUDIO_KNOWLEDGE,
+  GALXITY_MAKER_HOME,
+  GALXITY_TABLE_LOGICAL_NAME,
+  buildGalxityPowerAppsHandoff,
+} from "@/lib/galxity-powerapps";
 import { cn } from "@/lib/utils";
 
 export function GalxityKnowledgeView({
@@ -27,6 +33,7 @@ export function GalxityKnowledgeView({
   );
   const hits = useMemo(() => searchGalxity(q), [q]);
   const current = hits.find((row) => row.id === selected) ?? hits[0];
+  const handoff = useMemo(() => buildGalxityPowerAppsHandoff(), []);
 
   return (
     <div className="space-y-4">
@@ -58,6 +65,8 @@ export function GalxityKnowledgeView({
           </div>
         </div>
       </div>
+
+      <PowerAppsHandoff handoff={handoff} />
 
       <div className="rounded-xl border bg-card p-5">
         <h3 className="font-heading text-base font-semibold">
@@ -149,6 +158,72 @@ export function GalxityKnowledgeView({
         </div>
       )}
     </div>
+  );
+}
+
+function PowerAppsHandoff({
+  handoff,
+}: {
+  handoff: ReturnType<typeof buildGalxityPowerAppsHandoff>;
+}) {
+  return (
+    <section className="rounded-xl border bg-card p-5">
+      <div className="flex flex-wrap gap-2">
+        <Badge className="bg-sky-800 text-white">Power Apps handoff</Badge>
+        <Badge variant="outline">Dataverse not called</Badge>
+        <Badge variant="outline" className="font-mono">
+          {GALXITY_TABLE_LOGICAL_NAME}
+        </Badge>
+      </div>
+      <h3 className="font-heading mt-3 text-base font-semibold">
+        {GALXITY_COPILOT_STUDIO_KNOWLEDGE.name} → your environment
+      </h3>
+      <p className="mt-1 text-sm text-muted-foreground">{handoff.message}</p>
+      <a
+        href={GALXITY_MAKER_HOME}
+        className="mt-2 inline-block text-xs text-sky-800 break-all underline-offset-2 hover:underline"
+        target="_blank"
+        rel="noreferrer"
+      >
+        {GALXITY_MAKER_HOME}
+      </a>
+
+      <ol className="mt-4 list-decimal space-y-1.5 pl-5 text-sm">
+        {handoff.makerChecklist.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ol>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <a
+          href={handoff.exports.csv}
+          className={cn(buttonVariants({ size: "sm" }))}
+        >
+          Download CSV
+        </a>
+        <a
+          href={handoff.exports.zip}
+          className={cn(buttonVariants({ size: "sm", variant: "outline" }))}
+        >
+          Download markdown pack
+        </a>
+        <a
+          href={handoff.exports.json}
+          className={cn(buttonVariants({ size: "sm", variant: "outline" }))}
+        >
+          Handoff JSON
+        </a>
+      </div>
+
+      <div className="mt-4 rounded-lg border bg-muted/40 p-3">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Copilot Studio instructions (paste)
+        </p>
+        <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap font-mono text-[11px] leading-relaxed">
+          {handoff.agentInstructions}
+        </pre>
+      </div>
+    </section>
   );
 }
 

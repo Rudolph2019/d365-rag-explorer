@@ -1,0 +1,159 @@
+{
+  "schema": "d365-rag-explorer.dataverse.table.v1",
+  "logicalName": "cr458_galxityknowledge",
+  "schemaName": "cr458_GalxityKnowledge",
+  "displayName": "Galxity Knowledge",
+  "displayCollectionName": "Galxity Knowledge",
+  "description": "Galxity AI knowledge articles for Copilot Studio Knowledge and model-driven Power Apps. Maker table in env cc72ef22-bdee-e93a-a41f-db16e6d3fe0c. Prefer this custom table when Customer Service Knowledge Articles are not licensed; otherwise map the same content to knowledgearticle.",
+  "tableType": "Standard",
+  "publisherPrefix": "cr458_",
+  "ownershipType": "UserOwned",
+  "ownershipLabel": "User or team",
+  "primaryNameDisplayName": "Title",
+  "primaryNameAttribute": "cr458_title",
+  "primaryNameAttributeAlternates": ["cr458_name"],
+  "primaryNameNote": "Display name is Title. Confirm from column properties whether primary is cr458_title or cr458_name.",
+  "primaryIdAttribute": "cr458_galxityknowledgeid",
+  "entitySetName": "cr458_galxityknowledges",
+  "hasActivities": false,
+  "hasNotes": true,
+  "environmentId": "cc72ef22-bdee-e93a-a41f-db16e6d3fe0c",
+  "makerHome": "https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/home",
+  "makerTables": "https://make.powerapps.com/environments/cc72ef22-bdee-e93a-a41f-db16e6d3fe0c/entities?source=modeldrivenapp",
+  "createdViaWebApi": false,
+  "makerCreated": false,
+  "auth": "SKIPPED",
+  "authReason": "No Dataverse or Entra secrets in this explorer. Create the table in Maker, then import CSV or paste rows. The explorer never calls Dataverse.",
+  "alternateStandardTable": {
+    "logicalName": "knowledgearticle",
+    "displayName": "Knowledge Article",
+    "whenToUse": "If Customer Service / knowledge management is already licensed, upload the same content as published knowledgearticle rows and point Copilot Studio Knowledge at Dataverse Knowledge Article instead of this custom table."
+  },
+  "columns": [
+    {
+      "logicalName": "cr458_title",
+      "schemaName": "cr458_title",
+      "displayName": "Title",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 400,
+      "required": true,
+      "isPrimaryName": true
+    },
+    {
+      "logicalName": "cr458_articleid",
+      "schemaName": "cr458_ArticleId",
+      "displayName": "Article id",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 40,
+      "required": true,
+      "note": "Stable id from explorer (KA-GX-01 … KA-GX-06)."
+    },
+    {
+      "logicalName": "cr458_slug",
+      "schemaName": "cr458_Slug",
+      "displayName": "Slug",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 80,
+      "required": true
+    },
+    {
+      "logicalName": "cr458_summary",
+      "schemaName": "cr458_Summary",
+      "displayName": "Summary",
+      "type": "Memo",
+      "maxLength": 2000,
+      "required": true
+    },
+    {
+      "logicalName": "cr458_body",
+      "schemaName": "cr458_Body",
+      "displayName": "Body",
+      "type": "Memo",
+      "maxLength": 100000,
+      "required": true,
+      "note": "Plain text paragraphs joined with blank lines. Use for Copilot Studio grounding."
+    },
+    {
+      "logicalName": "cr458_area",
+      "schemaName": "cr458_Area",
+      "displayName": "Area",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 120,
+      "required": true
+    },
+    {
+      "logicalName": "cr458_tags",
+      "schemaName": "cr458_Tags",
+      "displayName": "Tags",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 400,
+      "required": false,
+      "note": "Comma-separated tags."
+    },
+    {
+      "logicalName": "cr458_related",
+      "schemaName": "cr458_Related",
+      "displayName": "Related article ids",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 200,
+      "required": false,
+      "note": "Comma-separated KA-GX-* ids."
+    },
+    {
+      "logicalName": "cr458_topic",
+      "schemaName": "cr458_Topic",
+      "displayName": "Topic",
+      "type": "String",
+      "format": "Text",
+      "maxLength": 80,
+      "required": true,
+      "default": "Galxity",
+      "note": "Always Galxity for this corpus."
+    }
+  ],
+  "modelDrivenApp": {
+    "suggestedAppName": "Galxity Knowledge",
+    "sitemapAreas": ["Knowledge"],
+    "views": [
+      {
+        "name": "Active Galxity Knowledge",
+        "columns": [
+          "cr458_articleid",
+          "cr458_title",
+          "cr458_area",
+          "cr458_tags",
+          "modifiedon"
+        ]
+      }
+    ],
+    "forms": [
+      {
+        "name": "Information",
+        "sections": [
+          {
+            "name": "Article",
+            "fields": [
+              "cr458_title",
+              "cr458_articleid",
+              "cr458_slug",
+              "cr458_area",
+              "cr458_topic",
+              "cr458_tags",
+              "cr458_related"
+            ]
+          },
+          {
+            "name": "Content",
+            "fields": ["cr458_summary", "cr458_body"]
+          }
+        ]
+      }
+    ]
+  }
+}
